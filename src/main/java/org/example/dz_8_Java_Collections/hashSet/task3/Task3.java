@@ -9,12 +9,11 @@ public class Task3 {
 
 	public Set<String> removeDuplicates(List<String> list1) {
 		HashSet<String> set1 = new HashSet<>();
-		list1.addAll(set1);
-		return new HashSet<>(list1);
+		set1.addAll(list1);
+		return set1;
 	}
 
 	public static void main(String[] args) {
-
 		List<String> list1 = new ArrayList<>();
 		list1.add("Апельсин");
 		list1.add("Яблоко");
@@ -23,6 +22,5 @@ public class Task3 {
 
 		Task3 task3 = new Task3();
 		System.out.println(task3.removeDuplicates(list1));
-
 	}
 }

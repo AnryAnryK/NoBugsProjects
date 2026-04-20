@@ -20,6 +20,6 @@ public class Task1 {
 		do {
 			System.out.println("Пользователь с заданным ID : " + int1 + "; Фамилия : " + str1 + " - есть в базе");
 		}
-			while (!hashMap1.containsKey(1)) ;
+			while (!hashMap1.containsKey(int1)) ;
 	}
 }

@@ -1,38 +1,41 @@
 package org.example.dz_8_Java_Collections.linkedHashMap.task3;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class Task3 {
+	LinkedHashMap<Integer, String> linkedHashMap1 = new LinkedHashMap<>(10);
+
+	public void addView(Integer number, String name) {
+
+		if (linkedHashMap1.size() >= 10) {
+			Integer firstNumber = linkedHashMap1.keySet().iterator().next();
+			linkedHashMap1.remove(firstNumber);
+		}
+		linkedHashMap1.put(number, name);
+		System.out.println("История просмотров: " + linkedHashMap1);
+	}
+
 
 	public static void main(String[] args) {
 
-		//задача НЕ сделана
+		Task3 task3 = new Task3();
+		task3.addView(1, "Глава 1");
+		task3.addView(2, "Глава 2");
+		task3.addView(3, "Глава 3");
+		task3.addView(4, "Глава 4");
+		task3.addView(5, "Глава 5");
+		task3.addView(6, "Глава 6");
+		task3.addView(7, "Глава 7");
+		task3.addView(8, "Глава 8");
+		task3.addView(9, "Глава 9");
+		task3.addView(10, "Глава 10");
+		task3.addView(11, "Глава 11");
+		task3.addView(12, "Глава 12");
+		task3.addView(13, "Глава 13");
+		task3.addView(14, "Глава 14");
 
-		LinkedHashMap<Integer, String> linkedHashMap1 = new LinkedHashMap<>(10);
-		linkedHashMap1.put(1, "Глава 1");
-		linkedHashMap1.put(2, "Глава 2");
-		linkedHashMap1.put(3, "Глава 3");
-		linkedHashMap1.put(4, "Глава 4");
-		linkedHashMap1.put(5, "Глава 5");
-		linkedHashMap1.put(6, "Глава 6");
-		linkedHashMap1.put(7, "Глава 7");
-		linkedHashMap1.put(8, "Глава 8");
-		linkedHashMap1.put(9, "Глава 9");
-		linkedHashMap1.put(10, "Глава 10");
-		linkedHashMap1.put(11, "Глава 11");
-
-
-		for (Map.Entry<Integer, String> entry1 : linkedHashMap1.entrySet()) {
-			System.out.println(entry1);
-
-//			через if пытался вызвать метод .replace у linkedHashMap1. В него нужно внести два аргумента:
-//			- первый, как я думаю, это размер Map, т.е. linkedHashMap1.size()
-//					- второй - это последний элемент Map, который нужно заменить, т.е. что-то типа .remove или .replace, или даже .merge)
-
-//			if (linkedHashMap1.replace(linkedHashMap1.size(), linkedHashMap1.){
-//
-//			}
-		}
+		System.out.println("Финальная история просмотров: ");
+		System.out.println(task3.linkedHashMap1);
 	}
 }
+
