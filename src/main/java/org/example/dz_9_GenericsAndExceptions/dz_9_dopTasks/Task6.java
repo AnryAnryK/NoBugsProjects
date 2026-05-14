@@ -1,4 +1,4 @@
-package org.example.dz_9.dz_9_dopTasks;
+package org.example.dz_9_GenericsAndExceptions.dz_9_dopTasks;
 
 public class Task6<T> implements Container<T> {
 	/*

@@ -1,4 +1,4 @@
-package org.example.dz_9.dz_Exceptions;
+package org.example.dz_9_GenericsAndExceptions.dz_Exceptions;
 
 public class Task4myVariant {
 

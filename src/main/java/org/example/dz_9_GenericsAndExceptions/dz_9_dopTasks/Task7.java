@@ -1,4 +1,4 @@
-package org.example.dz_9.dz_9_dopTasks;
+package org.example.dz_9_GenericsAndExceptions.dz_9_dopTasks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,9 @@ public class Task7 {
 	 */
 
 	public static <K, V> void keysAndValues(Map<K, V> kvMap) {
-		for (Map.Entry<K, V> entry : kvMap.entrySet()) ;
+		for (Map.Entry<K, V> entry : kvMap.entrySet()){
+			System.out.println(entry);
+		}
 	}
 
 	public static void main(String[] args) {
@@ -20,8 +22,8 @@ public class Task7 {
 		mapStringInt2.put("Петров", 1);
 
 		keysAndValues(mapIntString1);
-		System.out.println(mapIntString1);
+//		System.out.println(mapIntString1);
 		keysAndValues(mapStringInt2);
-		System.out.println(mapStringInt2);
+//		System.out.println(mapStringInt2);
 	}
 }

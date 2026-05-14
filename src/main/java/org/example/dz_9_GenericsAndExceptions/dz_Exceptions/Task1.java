@@ -1,6 +1,8 @@
-package org.example.dz_9.dz_Exceptions;
+package org.example.dz_9_GenericsAndExceptions.dz_Exceptions;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 
 public class Task1 {
 
@@ -16,7 +18,7 @@ public class Task1 {
 		try {
 			FileReader fileReader = new FileReader("data.txt");
 			fileReader.read();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.out.println("Файл не найден");
 		}
 	}

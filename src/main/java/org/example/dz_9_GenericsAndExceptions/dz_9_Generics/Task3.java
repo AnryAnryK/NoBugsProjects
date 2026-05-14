@@ -1,4 +1,4 @@
-package org.example.dz_9.dz_9_Generics;
+package org.example.dz_9_GenericsAndExceptions.dz_9_Generics;
 
 public class Task3 {
 
