@@ -1,4 +1,4 @@
-package org.example.dz_10.functionalInterface;
+package org.example.dz_10_FunctionalInterfaceLambdaStream.functionalInterface;
 
 public class Task1 {
 	/*
