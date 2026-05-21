@@ -13,8 +13,8 @@ public class Task1 {
 
 	public static void main(String[] args) {
 		List<String> list1 = Arrays.asList("Яблоки", "Виноград", "Киви", "Апельсины", "Бананы");
-		Map<Character, List<String>> list1GrouppingByFirstCharacter = list1.stream()
+		Map<Character, List<String>> list1GroupingByFirstCharacter = list1.stream()
 				.collect(Collectors.groupingBy(x -> x.charAt(0)));
-		System.out.println(list1GrouppingByFirstCharacter);
+		System.out.println(list1GroupingByFirstCharacter);
 	}
 }

@@ -12,7 +12,7 @@ public class Task5 {
 
 	public static void main(String[] args) {
 		List<Integer> list1 = Arrays.asList(1,1,2,3,4,4,2);
-		List<Integer> list1WithoutDublicate = list1.stream().distinct().collect(Collectors.toList());
-		System.out.println(list1WithoutDublicate);
+		List<Integer> list1WithoutDuplicate = list1.stream().distinct().collect(Collectors.toList());
+		System.out.println(list1WithoutDuplicate);
 	}
 }

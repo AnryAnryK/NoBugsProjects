@@ -12,7 +12,9 @@ public class Task1 {
 
 	public static void main(String[] args) {
 		List<Integer> list1 = Arrays.asList(1, 100, 22, 59);
-		int maxValueFromList1 = list1.stream().max(Comparator.naturalOrder()).get();
+		int maxValueFromList1 = list1.stream()
+				.max(Comparator.naturalOrder())
+				.orElseThrow(() -> new RuntimeException("Значение отсутствует"));
 		System.out.println("в этой коллекции: " + list1 + " самое большое значение = " + maxValueFromList1);
 		System.out.println("===========================================================================================");
 

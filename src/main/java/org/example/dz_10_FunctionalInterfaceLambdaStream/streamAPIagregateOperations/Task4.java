@@ -2,6 +2,7 @@ package org.example.dz_10_FunctionalInterfaceLambdaStream.streamAPIagregateOpera
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Task4 {
 	/*
@@ -14,7 +15,7 @@ public class Task4 {
 		String list1BeginToB = list1.stream()
 				.filter(x -> x.startsWith("Б"))
 				.findFirst()
-				.toString();
+				.orElseThrow(() -> new NoSuchElementException("No value present"));
 		System.out.println(list1BeginToB);
 	}
 }

@@ -9,20 +9,20 @@ public class Task1 {
 
 	public static void main(String[] args) {
 		MathOperation sum = (int a, int b) -> a + b;
-		System.out.println("Результат сложения двух чисел = " + sum.app(2, 4));
+		System.out.println("Результат сложения двух чисел = " + sum.apply(2, 4));
 
 		MathOperation minus = (int a, int b) -> a - b;
-		System.out.println("Результат вычитания двух чисел = " + minus.app(11, 4));
+		System.out.println("Результат вычитания двух чисел = " + minus.apply(11, 4));
 
 		MathOperation multiply = (int a, int b) -> a * b;
-		System.out.println("Результат умножения двух чисел = " + multiply.app(3, 4));
+		System.out.println("Результат умножения двух чисел = " + multiply.apply(3, 4));
 
 		MathOperation divide = (int a, int b) -> a / b;
-		System.out.println("Результат деленияния двух чисел = " + divide.app(12, 4));
+		System.out.println("Результат деления двух чисел = " + divide.apply(12, 4));
 	}
 }
 
 
 interface MathOperation {
-	int app(int a, int b);
+	int apply(int a, int b);
 }
