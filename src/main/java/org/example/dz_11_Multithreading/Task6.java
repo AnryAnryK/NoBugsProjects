@@ -11,17 +11,13 @@ public class Task6 implements Runnable {
 После завершения всех потоков, программа должна вывести общий результат: сколько элементов было обработано и их суммы.
 	 */
 
-
-	/*
-	НЕ СДЕЛАЛ !  Не понимаю как разбить Лист на равных три части
-	 */
-
 	int[] arraylist1;
 	int indexBegin;
 	int indexFinish;
 
 	int sum = 0;
 	int count = 0;
+	int countNumberInIndex = 0;
 
 	public int getSum() {
 		return this.sum;
@@ -35,8 +31,9 @@ public class Task6 implements Runnable {
 	public void run(){
 		for (int i = indexBegin; i < indexFinish; i++) {
 			count = count + arraylist1[i];
+			countNumberInIndex = arraylist1[i];
 			sum = sum++;
-			System.out.println("Индекс: " + i + "; Значение индекса: " + count);
+			System.out.println("Индекс: " + i + "; Значение индекса: " + countNumberInIndex);
 		}
 	}
 

@@ -1,6 +1,6 @@
 package org.example.dz_11_Multithreading;
 
-public class Main {
+public class Task6Main {
 
 	static int[] array = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
