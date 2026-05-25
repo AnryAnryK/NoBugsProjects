@@ -6,7 +6,7 @@ public class Task2 {
 Условие задачи: Создайте два потока. Один поток должен печатать "A", второй — "B", каждый по 5 раз с небольшой задержкой.
 	 */
 
-	public synchronized static void main(String[] args) {
+	public static void main(String[] args) {
 		Runnable threadA = () -> {
 			for (int i = 0; i < 5; i++)
 

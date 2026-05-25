@@ -30,9 +30,9 @@ public class Task6 implements Runnable {
 	@Override
 	public void run(){
 		for (int i = indexBegin; i < indexFinish; i++) {
-			count = count + arraylist1[i];
+			count++;
 			countNumberInIndex = arraylist1[i];
-			sum = sum++;
+			sum = sum + arraylist1[i];
 			System.out.println("Индекс: " + i + "; Значение индекса: " + countNumberInIndex);
 		}
 	}

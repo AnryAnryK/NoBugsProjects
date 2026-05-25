@@ -51,21 +51,23 @@ public class Task5 {
 			}
 		};
 		Thread threadFirst = new Thread(thread1);
-		threadFirst.start();
+		es1.submit(threadFirst);
 
 		Thread threadSecond = new Thread(thread2);
-		threadSecond.start();
+		es1.submit(threadSecond);
 
 		Thread threadThird = new Thread(thread3);
-		threadThird.start();
+		es1.submit(threadThird);
 
 		Thread threadFourth = new Thread(thread4);
-		threadFourth.start();
+		es1.submit(threadFourth);
 
 		threadFirst.join();
 		threadSecond.join();
 		threadThird.join();
 		threadFourth.join();
+
+		es1.shutdown();
 
 		System.out.println(Thread.currentThread().getName() + " : Первый поток : " + threadFirst);
 		System.out.println(Thread.currentThread().getName() + " : Второй поток : " + threadSecond);

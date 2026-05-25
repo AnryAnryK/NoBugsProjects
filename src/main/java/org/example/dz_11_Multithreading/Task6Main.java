@@ -29,13 +29,14 @@ public class Task6Main {
 		threadSecond2.join();
 		threadThird3.join();
 
-		return threadFirst.getCount() + threadFirst.getSum() + threadSecond.getCount() + threadSecond.getSum() + threadThird.getCount() + threadThird.getSum();
+		int totalSum = threadFirst.getSum() + threadSecond.getSum() + threadThird.getSum();
+		return totalSum;
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		int sum = halfSum(array);
+		int totalSum = halfSum(array);
 		int countAllТumbers = array.length;
-		System.out.println("Общая сумма цифр во всех потоках: " + sum);
+		System.out.println("Общая сумма цифр во всех потоках: " + totalSum);
 		System.out.println("Общее количество элементов, обработанных во всех потоках: " + countAllТumbers);
 	}
 }
