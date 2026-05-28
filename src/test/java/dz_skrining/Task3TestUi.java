@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-public class Task3ui {
+public class Task3TestUi {
 
 //	покрыть автотестами страницу логина: https://www.saucedemo.com/
 

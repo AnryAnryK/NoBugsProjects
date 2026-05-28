@@ -1,4 +1,4 @@
 package dz_12_TestsCode.DopTasksTests;
 
-public class Task20 {
+public class Task15Test {
 }

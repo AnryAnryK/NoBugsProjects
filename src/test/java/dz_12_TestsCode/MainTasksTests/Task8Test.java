@@ -1,4 +1,4 @@
 package dz_12_TestsCode.MainTasksTests;
 
-public class Task9 {
+public class Task8Test {
 }
