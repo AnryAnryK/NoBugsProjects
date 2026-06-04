@@ -1,4 +1,4 @@
-package dz_13_TrobleShooting;
+package dz_13_TroubleShooting;
 
 /*
 Задача 4:

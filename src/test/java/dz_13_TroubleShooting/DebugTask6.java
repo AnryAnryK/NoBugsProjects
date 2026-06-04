@@ -1,4 +1,4 @@
-package dz_13_TrobleShooting;
+package dz_13_TroubleShooting;
 
 /*
 Код должен напечатать числа от n до 1, но программа падает с StackOverflowError.

@@ -1,4 +1,4 @@
-package dz_13_TrobleShooting;
+package dz_13_TroubleShooting;
 
 /*
 Код должен сравнить два числа, но почему-то результат не соответствует ожиданиям.
