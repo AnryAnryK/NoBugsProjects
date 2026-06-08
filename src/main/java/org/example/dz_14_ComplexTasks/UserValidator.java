@@ -1,36 +1,46 @@
 package org.example.dz_14_ComplexTasks;
 
-public class UserValidator extends Exception {
-	User user1 = new User("Петя", 18, "petya@mail.com");
-	boolean validationEnabled = true;
+import java.util.regex.Pattern;
 
-	public void checkUserName(String name) {
+public class UserValidator {
+	private final User user;
+	boolean validationEnabled;
 
-		if (name != null && name.startsWith("[A-Z]\\w*") && validationEnabled)
-			try {
-				user1.getName();
-			} catch (Exception InvalidUserException) {
-				System.out.println("Имя пользователя не соответствует требованиям: " + InvalidUserException);
-			}
+	public UserValidator(User user, boolean validationEnabled) {
+		this.user = user;
+		this.validationEnabled = validationEnabled;
 	}
 
-	public void checkUserAge(int age) {
 
-		if (age < 18 && age > 100 && validationEnabled)
-			try {
-				user1.getAge();
-			} catch (Exception InvalidUserException) {
-				System.out.println("Возраст пользователя не соответствует требованиям: " + InvalidUserException);
-			}
+	public void checkUserName() throws InvalidUserException {
+		String userName = user.getName();
+		if (userName == null || userName.isEmpty() || !Character.isUpperCase(userName.charAt(0))) {
+			throw new InvalidUserException("Имя пользователя не соответствует требованиям: ");
+		}
 	}
 
-	public void checkUserEmail(String email) {
+	public void checkUserAge() throws InvalidUserException {
+		Integer userAge = user.getAge();
+		if (userAge == null || userAge < 18 || userAge > 100) {
+			throw new InvalidUserException("Возраст пользователя не соответствует требованиям: ");
+		}
+	}
 
-		if (email.equals("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@\" +\n\"(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$") && validationEnabled)
-			try {
-				user1.getEmail();
-			} catch (Exception InvalidUserException) {
-				System.out.println("Электронная почта пользователя не соответствует требованиям: " + InvalidUserException);
-			}
+	public void checkUserEmail() throws InvalidUserException {
+		String userEmail = user.getEmail();
+		if (userEmail == null || userEmail.isEmpty() || !Pattern.matches("^[\\w.+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", userEmail)) {
+			throw new InvalidUserException("Электронная почта пользователя не соответствует требованиям: ");
+		}
+	}
+
+	public void validate() throws InvalidUserException {
+		if (!validationEnabled) {
+			return;
+		}
+		checkUserName();
+		checkUserAge();
+		checkUserEmail();
 	}
 }
+
+
