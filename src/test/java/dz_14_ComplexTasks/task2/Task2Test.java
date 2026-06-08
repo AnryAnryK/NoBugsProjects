@@ -1,8 +1,8 @@
-package dz_14_ComplexTasks;
+package dz_14_ComplexTasks.task2;
 
-import org.example.dz_14_ComplexTasks.InvalidUserException;
-import org.example.dz_14_ComplexTasks.User;
-import org.example.dz_14_ComplexTasks.UserValidator;
+import org.example.dz_14_ComplexTasks.task2.InvalidUserException;
+import org.example.dz_14_ComplexTasks.task2.User;
+import org.example.dz_14_ComplexTasks.task2.UserValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

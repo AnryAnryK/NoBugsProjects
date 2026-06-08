@@ -1,4 +1,4 @@
-package org.example.dz_14_ComplexTasks;
+package org.example.dz_14_ComplexTasks.task2;
 
 /*
 Задача 2: Валидатор пользовательских данных

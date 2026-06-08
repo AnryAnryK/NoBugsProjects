@@ -1,4 +1,4 @@
-package org.example.dz_14_ComplexTasks;
+package org.example.dz_14_ComplexTasks.task2;
 
 import java.util.regex.Pattern;
 
