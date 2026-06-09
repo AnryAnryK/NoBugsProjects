@@ -3,27 +3,35 @@ package org.example.dz_14_ComplexTasks.task3;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GradeService<T> {
-	StudentGrade<T> studentGrade1;
+public class GradeService<T extends Number> {
+	StudentGrade<T> studentGrade;
 
-	List<StudentGrade<T>> studentsGradeList = new ArrayList<>();
+	private final List<StudentGrade<T>> studentsGradeList = new ArrayList<>();
 
-	public void addGrade(String name, String subject, Integer mark) {
-//		studentGrade1 = new StudentGrade<>(name, subject, mark);
-//		if (studentGrade1.getMark() <= 0) {
-//			System.out.println("Оценка не может быть отрицательной, введите положительное число !");
-//		} else {
-//			studentsGradeList.add(StudentGrade<T> mark);
-//		}
-
-
-//		studentsGradeList.add(1);
-
+	public synchronized void addGrade(StudentGrade<T> studentGrade) throws InvalidGradeException {
+		double doubleValueGetMarkResult = studentGrade.getMark().doubleValue();
+		if (doubleValueGetMarkResult <= 0) {
+			throw new InvalidGradeException("Оценка не может быть 0 или отрицательной, введите положительное число !");
+		}
+		studentsGradeList.add(studentGrade);
 	}
 
-	public void avgMarkBySubject(String subject, Integer mark){
-		Double avgMark = 0.0;
-//		avgMarkResult = ((mark + mark)/mark);
+	public synchronized double avgMarkBySubject(String subject) {
+
+		Integer count = 0;
+		Double sum = 0.0;
+
+		for (StudentGrade<T> avgGrade : studentsGradeList) {
+			if (subject.equals(avgGrade.getSubject())) {
+				sum = sum + avgGrade.getMark().doubleValue();
+				count++;
+			}
+		}
+
+		if (count > 0) {
+			return sum / count;
+		} else return 0.0;
 	}
 }
+
 

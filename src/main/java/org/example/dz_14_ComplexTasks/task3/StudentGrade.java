@@ -26,13 +26,13 @@ package org.example.dz_14_ComplexTasks.task3;
 Обеспечение потокобезопасности при добавлении оценок с использованием synchronized.
  */
 
-public class StudentGrade<T> extends Number {
+public class StudentGrade<T> {
 
-	private String name;
-	private String subject;
-	private Integer mark;
+	private final String name;
+	private final String subject;
+	private final T mark;
 
-	StudentGrade(String name, String subject, Integer mark) {
+	public StudentGrade(String name, String subject, T mark) {
 		this.name = name;
 		this.subject = subject;
 		this.mark = mark;
@@ -46,28 +46,8 @@ public class StudentGrade<T> extends Number {
 		return subject;
 	}
 
-	public Integer getMark() {
+	public T getMark() {
 		return mark;
 	}
-
-
-	@Override
-	public int intValue() {
-		return 0;
-	}
-
-	@Override
-	public long longValue() {
-		return 0;
-	}
-
-	@Override
-	public float floatValue() {
-		return 0;
-	}
-
-	@Override
-	public double doubleValue() {
-		return 0;
-	}
 }
+
