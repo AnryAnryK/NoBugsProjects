@@ -1,30 +1,47 @@
 package org.example.dz_14_ComplexTasks.task5;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InventoryService {
+	private final Map<String, List<Product>> listOfProducts1 = new HashMap<>();
+	private boolean isInventoryOpen = true;
 
-	Map<String, List<Product>> listOfProducts1 = new HashMap<>();
-	boolean isInventoryOpen = true;
+	public void getFlagSsInventoryOpen(boolean isInventoryOpen) {
+		this.isInventoryOpen = isInventoryOpen;
+	}
 
-	public Product addProduct(Product product) throws OutOfStockException {
-
+	public synchronized Product addProduct(Product product) throws OutOfStockException {
 		if (!isInventoryOpen) {
 			throw new OutOfStockException("Флаг isInventoryOpen равен false, операция добавления не должна выполняться");
 		}
-		product.getProductName();
-		product.getProductPrice();
-		product.getProductCategory();
+		String category = product.getProductCategory();
+		listOfProducts1.computeIfAbsent(category, k -> new ArrayList<>()).add(product);
 		return product;
 	}
 
-	public Product getProductByCategory(Product product) throws OutOfStockException {
-		if (product.getProductCategory().isEmpty() || product.getProductCategory() == null) {
+	public Product getProductByCategory(String productCategory) throws OutOfStockException {
+		List<Product> products = listOfProducts1.getOrDefault(productCategory, Collections.emptyList());
+		if (products.isEmpty() || products == null) {
 			throw new OutOfStockException("В указанной категории нет товаров");
 		}
-		product.getProductCategory();
+		return products.remove(0);
+	}
+
+	public Product findAndGetProductByCategoryFiltersStreamApi(Product product) {
+		listOfProducts1.get(product.getProductCategory())
+				.stream()
+				.filter(x -> x.getProductCategory()
+						.equals(product.getProductCategory()));
 		return product;
+	}
+
+	public Product findAndGetProductByPriceFiltersStreamApi(Product product) {
+		double targetPrice = product.getProductPrice();
+
+		return listOfProducts1.values().stream()
+				.flatMap(List::stream)
+				.filter(x -> x.getProductPrice().equals(targetPrice))
+				.findFirst()
+				.orElse(null);
 	}
 }
