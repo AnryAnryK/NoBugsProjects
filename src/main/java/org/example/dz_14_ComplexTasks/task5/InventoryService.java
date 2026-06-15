@@ -1,6 +1,7 @@
 package org.example.dz_14_ComplexTasks.task5;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InventoryService {
 	private final Map<String, List<Product>> listOfProducts1 = new HashMap<>();
@@ -27,12 +28,14 @@ public class InventoryService {
 		return products.remove(0);
 	}
 
-	public Product findAndGetProductByCategoryFiltersStreamApi(Product product) {
-		listOfProducts1.get(product.getProductCategory())
+	public List<Product> findAndGetProductByCategoryFiltersStreamApi(String category) throws OutOfStockException {
+		List<Product> productsInCategory = listOfProducts1.getOrDefault(category, Collections.emptyList());
+		if (category.isEmpty()) {
+			throw new OutOfStockException("Категория товара отсутствует");
+		}
+		return productsInCategory
 				.stream()
-				.filter(x -> x.getProductCategory()
-						.equals(product.getProductCategory()));
-		return product;
+				.collect(Collectors.toList());
 	}
 
 	public Product findAndGetProductByPriceFiltersStreamApi(Product product) {
@@ -40,7 +43,7 @@ public class InventoryService {
 
 		return listOfProducts1.values().stream()
 				.flatMap(List::stream)
-				.filter(x -> x.getProductPrice().equals(targetPrice))
+				.filter(x -> x.getProductPrice() == targetPrice)
 				.findFirst()
 				.orElse(null);
 	}

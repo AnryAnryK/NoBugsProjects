@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-public class EntityManager<T> {
+public class EntityManager<T extends User> {
 
 	private final CopyOnWriteArrayList<T> list1 = new CopyOnWriteArrayList<>();
 
@@ -25,23 +25,23 @@ public class EntityManager<T> {
 		return false;
 	}
 
+	public List<T> filterByIsActive(boolean isActive) {
+		return list1.stream()
+				.filter(x -> x.isActive() == isActive)
+				.collect(Collectors.toList());
+	}
+
 
 	public List<T> filterByAge(int minAge, int maxAge) {
 		return list1.stream()
-				.filter(e -> e instanceof User)
-				.map(e -> (User) e)
-				.filter(user -> user.getAge() >= minAge &&
-						user.getAge() <= maxAge)
+				.filter(user -> user.getAge() >= minAge && user.getAge() <= maxAge)
 				.map(user -> (T) user)
 				.collect(Collectors.toList());
 	}
 
 	public List<T> filterByName(String name) {
 		return list1.stream()
-				.filter(e -> e instanceof User)
-				.map(e -> (User) e)
-				.filter(user ->
-						user.getName().equalsIgnoreCase(name))
+				.filter(user -> user.getName().equalsIgnoreCase(name))
 				.map(user -> (T) user)
 				.collect(Collectors.toList());
 	}

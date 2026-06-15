@@ -6,8 +6,9 @@ import org.example.dz_14_ComplexTasks.task5.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InventoryServiceTest {
 
@@ -72,8 +73,21 @@ public class InventoryServiceTest {
 		Product product1 = new Product("Лопатка", 0.2, "Хозтовары");
 		inventoryService1.getFlagSsInventoryOpen(true);
 		inventoryService1.addProduct(product1);
-		inventoryService1.findAndGetProductByCategoryFiltersStreamApi(product1);
-		assertEquals("Хозтовары", inventoryService1.addProduct(product1).getProductCategory());
+
+		List<Product> resultList = inventoryService1.findAndGetProductByCategoryFiltersStreamApi("Хозтовары");
+		assertTrue(resultList.contains(product1));
+	}
+
+	@Test
+	@DisplayName("Позитивные тесты: проверка поиска и фильтрации товаров по ОТСУТСТВУЮЩЕЙ категории товаров")
+	public void checkAddProductWithActiveFlagByAbsentCategoryPositiveTests() throws OutOfStockException {
+		InventoryService inventoryService1 = new InventoryService();
+		Product product1 = new Product("Лопатка", 0.2, "Хозтовары");
+		inventoryService1.getFlagSsInventoryOpen(true);
+		inventoryService1.addProduct(product1);
+
+		List<Product> resultList = inventoryService1.findAndGetProductByCategoryFiltersStreamApi("Хозтовары1");
+		assertFalse(resultList.contains(product1));
 	}
 
 	@Test

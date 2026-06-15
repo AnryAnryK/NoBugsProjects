@@ -26,20 +26,20 @@ TaskService<T>:
  */
 
 public class Task<T> {
-	private final int id;
+	private final T id;
 	private final String status;
 	private final String priority;
 	private final String date;
 
 
-	public Task(int id, String status, String priority, String date) {
+	public Task(T id, String status, String priority, String date) {
 		this.id = id;
 		this.status = status;
 		this.priority = priority;
 		this.date = date;
 	}
 
-	public int getId() {
+	public T getId() {
 		return id;
 	}
 
