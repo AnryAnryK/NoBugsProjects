@@ -1,5 +1,9 @@
 package org.example.expressJavaTasks;
 
+/*
+Вернуть строку в обратном порядке.
+ */
+
 public class FiftyThreeStringReverse {
 
 	public static String stringReverse (String str){

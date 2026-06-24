@@ -1,5 +1,9 @@
 package org.example.expressJavaTasks;
 
+/*
+Посчитать количество гласных букв в строке.
+ */
+
 public class SevenCountingVowels {
 
 	public static int countingVowels(String str) {

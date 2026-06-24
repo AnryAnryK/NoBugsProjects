@@ -1,5 +1,9 @@
 package org.example.expressJavaTasks;
 
+/*
+Найти второй по величине элемент в массиве.
+ */
+
 public class EightFindingTheSecondMaximumElement {
 
 	public static int findingTheSecondMaximumElement(int[] arr) {

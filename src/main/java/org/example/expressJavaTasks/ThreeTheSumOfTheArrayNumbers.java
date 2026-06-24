@@ -1,5 +1,9 @@
 package org.example.expressJavaTasks;
 
+/*
+Посчитать сумму всех чисел в массиве.
+ */
+
 public class ThreeTheSumOfTheArrayNumbers {
 
 	public static int sumOfTheArrayNumbers(int[] arr) {

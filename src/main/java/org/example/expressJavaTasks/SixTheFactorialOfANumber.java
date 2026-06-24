@@ -1,5 +1,9 @@
 package org.example.expressJavaTasks;
 
+/*
+Вычислить факториал числа n (n!).
+ */
+
 public class SixTheFactorialOfANumber {
 
 	public static int theFactorialOfANumber(int num) {

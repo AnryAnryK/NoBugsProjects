@@ -1,5 +1,9 @@
 package org.example.expressJavaTasks;
 
+/*
+Определить, является ли число простым (делится только на 1 и себя).
+ */
+
 public class FiveCheckingForAPrimeNumber {
 
 	public static boolean checkingForAPrimeNumber(int num) {

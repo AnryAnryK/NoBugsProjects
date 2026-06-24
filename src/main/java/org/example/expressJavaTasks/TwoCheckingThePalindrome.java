@@ -1,5 +1,9 @@
 package org.example.expressJavaTasks;
 
+/*
+Проверить, является ли строка палиндромом (одинаково читается в обе стороны).
+ */
+
 public class TwoCheckingThePalindrome {
 
 	public static Boolean isPalindrome(String s) {

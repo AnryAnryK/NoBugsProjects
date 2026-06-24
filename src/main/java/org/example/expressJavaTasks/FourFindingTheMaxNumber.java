@@ -1,5 +1,9 @@
 package org.example.expressJavaTasks;
 
+/*
+Найти наибольшее число в массиве.
+ */
+
 public class FourFindingTheMaxNumber {
 
 	public static int findingTheMaxNumber(int[] arr) {
