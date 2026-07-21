@@ -2,7 +2,7 @@ package org.example.practice;
 
 import java.util.Arrays;
 
-public class Smth1 {
+public class ArraysEquals {
 
 	public static boolean arraysEquals(int[] a, int[] b) {
 
@@ -17,10 +17,10 @@ public class Smth1 {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(Smth1.arraysEquals(new int[]{1, 1, 3, 5}, new int[]{1, 1, 3, 5}));
-		System.out.println(Smth1.arraysEquals(new int[]{1, 2, 3, 5}, new int[]{1, 1, 3, 5}));
-		System.out.println(Smth1.arraysEquals(new int[]{}, new int[]{1, 1, 3, 5}));
-		System.out.println(Smth1.arraysEquals(new int[]{}, new int[]{}));
-		System.out.println(Smth1.arraysEquals(null, new int[]{}));
+		System.out.println(ArraysEquals.arraysEquals(new int[]{1, 1, 3, 5}, new int[]{1, 1, 3, 5}));
+		System.out.println(ArraysEquals.arraysEquals(new int[]{1, 2, 3, 5}, new int[]{1, 1, 3, 5}));
+		System.out.println(ArraysEquals.arraysEquals(new int[]{}, new int[]{1, 1, 3, 5}));
+		System.out.println(ArraysEquals.arraysEquals(new int[]{}, new int[]{}));
+		System.out.println(ArraysEquals.arraysEquals(null, new int[]{}));
 	}
 }

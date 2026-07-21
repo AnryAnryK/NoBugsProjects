@@ -1,4 +1,4 @@
-package org.example.practice;
+package org.example.practice.theCounterOfTheWinningCountriesInFootball;
 
 /*
 Список Стран:
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JulySecond {
+public class TheCounterOfTheWinningCountriesInFootball {
 
 	public static Map<String, Integer> findWinner(List<String> lst) {
 
@@ -41,6 +41,6 @@ public class JulySecond {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(JulySecond.findWinner(List.of("Марокко", "Англия", "Марокко", "Англия", "Норвегия", "Норвегия", "Португалия", "Англия")));
+		System.out.println(TheCounterOfTheWinningCountriesInFootball.findWinner(List.of("Марокко", "Англия", "Марокко", "Англия", "Норвегия", "Норвегия", "Португалия", "Англия")));
 	}
 }

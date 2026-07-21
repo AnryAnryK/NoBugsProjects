@@ -1,4 +1,4 @@
-package org.example.practice;
+package org.example.practice.findMaxString;
 
 /*
 Есть список строк.
@@ -6,7 +6,7 @@ package org.example.practice;
 ["Лес", "Копыта", "Шизофрения", "Паять"]
  */
 
-public class NineOfJuly {
+public class FindMaxString {
 
 	public static String findMaxString(String[] str) {
 

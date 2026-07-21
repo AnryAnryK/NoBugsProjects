@@ -43,24 +43,28 @@ package org.example.mockInterview.timur.task2;
  */
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		Book book1 = new Book("450 градусов по Фаренгейту", "Рэй Брэдбери", 1);
 		Book book2 = new Book("Винни-Пух", "Александр Милн", 1);
 
 		Library library1 = new Library("Ленинская библиотека", new ArrayList<>(List.of(book1, book2)));
 		LibraryManager libraryManager = new LibraryManager();
-
 		libraryManager.showListOfAvailableBooksInTheLibrary(library1);
-		System.out.println("Список книг в библиотеке: " + library1.getListOfBooks());
 
 		libraryManager.addBookToLibrary(library1, book1);
 		libraryManager.addBookToLibrary(library1, book1);
+		libraryManager.addBookToLibrary(library1, book2);
+		libraryManager.showListOfAvailableBooksInTheLibrary(library1);
+
+		libraryManager.libraryGivesBookToReader(library1, book1);
+		libraryManager.showListOfAvailableBooksInTheLibrary(library1);
+
+		libraryManager.libraryTakesBookFromReader(library1, book2);
 		libraryManager.showListOfAvailableBooksInTheLibrary(library1);
 	}
 }
