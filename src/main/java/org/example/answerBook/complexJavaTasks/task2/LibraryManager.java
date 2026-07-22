@@ -19,15 +19,22 @@ public class LibraryManager {
 	}
 
 
-	public boolean isAvailable() {
-		if (isAvailable == false) {
-			System.out.println("Книга - не доступна к выдаче");
-			return false;
+	public boolean isAvailable(String title, String author) {
+		for (Books book : booksList) {
+			if (book.getTitle().equalsIgnoreCase(title) && book.getAuthor().equalsIgnoreCase(author)) {
+				if (book.isAvailable()) {
+					book.setAvailable(true);
+					System.out.println("Книга: " + book.getTitle() + " " + book.getAuthor() + " - свободна");
+					return true;
+				} else {
+					book.setAvailable(false);
+					System.out.println("Книга: " + book.getTitle() + " " + book.getAuthor() + " - занята");
+					return false;
+				}
+			}
 		}
-		if (isAvailable == true) {
-			System.out.println("Книга - доступна к выдаче");
-		}
-		return true;
+		System.out.println("Книга не найдена ни среди занятых, ни среди свободных");
+		return false;
 	}
 
 	public void findBookByAuthor(String author) {

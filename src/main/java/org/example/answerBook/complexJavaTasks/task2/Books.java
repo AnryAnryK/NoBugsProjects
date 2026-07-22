@@ -2,17 +2,17 @@ package org.example.answerBook.complexJavaTasks.task2;
 
 public class Books {
 
-	String title;
-	String author;
-	int publishYear;
-	boolean isAvailable;
+	private String title;
+	private String author;
+	private int publishYear;
+	private boolean isAble;
 
 
-	public Books(String title, String author, int publishYear, boolean isAvailable) {
+	public Books(String title, String author, int publishYear, boolean isAble) {
 		this.title = title;
 		this.author = author;
 		this.publishYear = publishYear;
-		this.isAvailable = isAvailable;
+		this.isAble = isAble;
 	}
 
 	public String getTitle() {
@@ -40,11 +40,11 @@ public class Books {
 	}
 
 	public boolean isAvailable() {
-		return isAvailable;
+		return isAble;
 	}
 
 	public void setAvailable(boolean available) {
-		isAvailable = available;
+		isAble = available;
 	}
 
 	@Override
