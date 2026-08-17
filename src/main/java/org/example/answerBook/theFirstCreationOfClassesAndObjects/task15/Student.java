@@ -34,7 +34,7 @@ public class Student {
 		if (gpa > GPA_MARK) {
 			System.out.println("Студент - отличник");
 		} else {
-			System.out.println("Студент - не отличник");
+			System.out.println("Студент - не отличник ");
 		}
 	}
 }
