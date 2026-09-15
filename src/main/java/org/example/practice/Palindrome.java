@@ -1,4 +1,4 @@
-package org.example.TasksLivecode;
+package org.example.practice;
 
 /*
 Палиндром
