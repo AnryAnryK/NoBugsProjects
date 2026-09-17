@@ -1,7 +1,7 @@
 package org.example.answerBook.funcInterfaceLambdaStreamAPI.task1;
 
 /*
-Фильтрация строк по длине
+1. Фильтрация строк по длине
  Из списка строк выбери только те, чья длина больше 5, используя Predicate и stream().filter().
  */
 

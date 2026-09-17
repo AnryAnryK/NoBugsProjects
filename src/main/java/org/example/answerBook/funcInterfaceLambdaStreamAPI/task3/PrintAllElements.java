@@ -1,7 +1,7 @@
 package org.example.answerBook.funcInterfaceLambdaStreamAPI.task3;
 
 /*
-Печать всех элементов с Consumer
+3. Печать всех элементов с Consumer
  Пройдись по списку и выведи каждый элемент, используя Consumer и forEach().
  */
 

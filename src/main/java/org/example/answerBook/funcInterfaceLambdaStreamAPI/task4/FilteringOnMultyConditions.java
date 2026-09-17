@@ -1,7 +1,7 @@
 package org.example.answerBook.funcInterfaceLambdaStreamAPI.task4;
 
 /*
-Фильтрация по нескольким условиям
+4. Фильтрация по нескольким условиям
  Оставь только положительные чётные числа. Используй цепочку filter() с несколькими Predicate.
  */
 

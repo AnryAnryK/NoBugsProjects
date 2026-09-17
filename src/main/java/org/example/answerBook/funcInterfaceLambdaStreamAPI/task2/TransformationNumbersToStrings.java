@@ -1,7 +1,7 @@
 package org.example.answerBook.funcInterfaceLambdaStreamAPI.task2;
 
 /*
-Преобразование чисел в строки
+2. Преобразование чисел в строки
  Преобразуй список чисел в список строк с приставкой "Число: " — используй Function.
  */
 
