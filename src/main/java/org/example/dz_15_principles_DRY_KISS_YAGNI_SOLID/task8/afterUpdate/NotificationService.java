@@ -6,7 +6,7 @@ package org.example.dz_15_principles_DRY_KISS_YAGNI_SOLID.task8.afterUpdate;
  */
 
 public class NotificationService {
-	private Notification notification;
+	private final Notification notification;
 
 	public NotificationService(Notification notification) {
 		this.notification = notification;

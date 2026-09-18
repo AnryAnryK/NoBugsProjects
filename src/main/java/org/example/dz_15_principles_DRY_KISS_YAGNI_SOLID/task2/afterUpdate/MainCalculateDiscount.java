@@ -21,5 +21,10 @@ public class MainCalculateDiscount {
 		Customer customer4 = new Customer("Сёма", true);
 		DiscountCalculator discountCalculator4 = new DiscountCalculator();
 		System.out.println("Заказ Клиента: " + customer4.getName() + ": " + discountCalculator4.calculateDiscount(product4, customer4, true, true));
+
+		Product product5 = new Product(100.00, "Обои");
+		Customer customer5 = new Customer("Сёма", false);
+		DiscountCalculator discountCalculator5 = new DiscountCalculator();
+		System.out.println("Заказ Клиента: " + customer5.getName() + ": " + discountCalculator5.calculateDiscount(product5, customer5, true, true));
 	}
 }

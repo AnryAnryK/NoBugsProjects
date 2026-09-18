@@ -21,10 +21,9 @@ public class DiscountCalculator {
 			return price - price * DISCOUNT_LOYAL_CUSTOMER;
 		} else if (hasCoupon) {
 			return price - price * DISCOUNT_WITH_COUPON;
-		} else if (!customer.isLoyalCustomer() && !isFirstPurchase && !hasCoupon) {
+		} else {
 			return price - price * DISCOUNT;
 		}
-		return price;
 	}
 }
 
