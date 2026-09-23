@@ -1,7 +1,7 @@
 package org.example.answerBook.exceptionsAndGenerics.task2;
 
 /*
-Печать любого списка
+2. Печать любого списка
  Метод, выводящий элементы списка произвольного типа.
  */
 

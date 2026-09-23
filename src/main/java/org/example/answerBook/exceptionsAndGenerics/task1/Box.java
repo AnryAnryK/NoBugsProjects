@@ -1,7 +1,7 @@
 package org.example.answerBook.exceptionsAndGenerics.task1;
 
 /*
-Универсальная коробка
+1. Универсальная коробка
  Класс Box<T> с методами put() и get().
  */
 

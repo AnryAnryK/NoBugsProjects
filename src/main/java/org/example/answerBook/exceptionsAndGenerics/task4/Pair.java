@@ -1,7 +1,7 @@
 package org.example.answerBook.exceptionsAndGenerics.task4;
 
 /*
-Связанная пара
+4. Связанная пара
  Класс Pair<K, V> с методом toString().
  */
 

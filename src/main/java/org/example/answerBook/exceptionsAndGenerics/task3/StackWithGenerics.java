@@ -1,7 +1,7 @@
 package org.example.answerBook.exceptionsAndGenerics.task3;
 
 /*
-Стек с дженериками
+3. Стек с дженериками
  Реализация обобщённого стека.
  */
 
