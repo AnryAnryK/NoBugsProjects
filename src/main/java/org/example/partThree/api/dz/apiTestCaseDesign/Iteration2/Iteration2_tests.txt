@@ -1,0 +1,371 @@
+### Итерация 2: Тесты
+### Позитивные
+
++ 1. Депозит денег пользователем
++ 2. Перевод денег с одного аккаунта на другой
++ 3. Изменение имени пользователя
+
+####################################################################################################
+
+###########CreateNewUserByAdmin(1)
+
+POST:  http://localhost:4111/api/v1/admin/users
+{
+  "username": "Aabbcc11",
+  "password": "Aabbcc11!",
+  "role": "USER"
+}
+УСПЕШНО.
+
+
+###########CreateNewUserByAdmin(2)
+POST:  http://localhost:4111/api/v1/admin/users
+{
+  "username": "Aabbcc12",
+  "password": "Aabbcc12!",
+  "role": "USER"
+}
+УСПЕШНО.
+
+####################################################################################################
+
+###########CreateAccount(1)
+POST: http://localhost:4111/api/v1/accounts
+{
+    "id": 2,
+    "accountNumber": "ACC2",
+    "balance": 0.0,
+    "transactions": []
+}
+УСПЕШНО.
+
+###########CreateAccount(2)
+POST: http://localhost:4111/api/v1/accounts
+{
+    "id": 3,
+    "accountNumber": "ACC3",
+    "balance": 0.0,
+    "transactions": []
+}
+УСПЕШНО.
+
+####################################################################################################
+
+###########Deposit(1)
+POST: http://localhost:4111/api/v1/accounts/deposit
+{
+  "id": 2,
+  "balance": 5.5
+}
+УСПЕШНО.
+{
+    "id": 2,
+    "accountNumber": "ACC2",
+    "balance": 5.5,
+    "transactions": [
+        {
+            "id": 2,
+            "amount": 5.5,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Sep 29 13:15:27 UTC 2026",
+            "relatedAccountId": 2
+        }
+    ]
+}
+
+####################################################################################################
+
+###########Transfer(1)
+POST: http://localhost:4111/api/v1/accounts/transfer
+{
+  "senderAccountId": 2,
+  "receiverAccountId": 1,
+  "amount": 1.25
+}
+УСПЕШНО.
+{
+    "receiverAccountId": 1,
+    "amount": 1.25,
+    "message": "Transfer successful",
+    "senderAccountId": 2
+}
+
+####################################################################################################
+
+#####UpdateCustomerName(1)
+PUT: http://localhost:4111/api/v1/customer/profile
+{
+  "name": "Aabbcc New"
+}
+УСПЕШНО.
+{
+    "message": "Profile updated successfully",
+    "customer": {
+        "id": 2,
+        "username": "Aabbcc11",
+        "password": "$2a$10$OswmWrhpGnTqM8..fOT24uiW.JVcm0Hd4x1hJMAlTseiPyVQVOLdC",
+        "name": "Aabbcc New",
+        "role": "USER",
+        "accounts": [
+            {
+                "id": 2,
+                "accountNumber": "ACC2",
+                "balance": 4.25,
+                "transactions": [
+                    {
+                        "id": 3,
+                        "amount": 1.25,
+                        "type": "TRANSFER_OUT",
+                        "timestamp": "Tue Sep 29 13:18:16 UTC 2026",
+                        "relatedAccountId": 1
+                    },
+                    {
+                        "id": 2,
+                        "amount": 5.5,
+                        "type": "DEPOSIT",
+                        "timestamp": "Tue Sep 29 13:15:27 UTC 2026",
+                        "relatedAccountId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "accountNumber": "ACC3",
+                "balance": 0.0,
+                "transactions": []
+            },
+            {
+                "id": 1,
+                "accountNumber": "ACC1",
+                "balance": 101.75,
+                "transactions": [
+                    {
+                        "id": 4,
+                        "amount": 1.25,
+                        "type": "TRANSFER_IN",
+                        "timestamp": "Tue Sep 29 13:18:16 UTC 2026",
+                        "relatedAccountId": 2
+                    },
+                    {
+                        "id": 1,
+                        "amount": 100.5,
+                        "type": "DEPOSIT",
+                        "timestamp": "Tue Sep 29 13:13:08 UTC 2026",
+                        "relatedAccountId": 1
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+####################################################################################################
+####################################################################################################
+####################################################################################################
+
+### Негативные и "Угловые" кейсы
+
+1. Депозит денег пользователем
++- 2. Перевод денег с одного аккаунта на другой
++ 3. Изменение имени пользователя
+
+####################################################################################################
+
+
+###########TransferUnderMaxSum(1)
+POST: http://localhost:4111/api/v1/accounts/transfer
+{
+  "senderAccountId": 2,
+  "receiverAccountId": 1,
+  "amount": 10000.01
+}
+СООТВЕТСТВУЕТ ОЖИДАЕМОМУ РЕЗУЛЬТАТУ. 400 ошибка.
+Transfer amount cannot exceed 10000.
+
+
+
+####################################################################################################
+
+
+###########TransferUnderEqualsMaxSumButNotEnoughMoneyInAccount
+POST: http://localhost:4111/api/v1/accounts/transfer
+{
+  "senderAccountId": 2,
+  "receiverAccountId": 1,
+  "amount": 10000.00
+}
+СООТВЕТСТВУЕТ ОЖИДАЕМОМУ РЕЗУЛЬТАТУ. 400 ошибка.
+Invalid transfer: insufficient funds or invalid accounts.
+
+
+
+####################################################################################################
+#####UpdateCustomerNameMultipleSpaces(1)
+PUT: http://localhost:4111/api/v1/customer/profile
+{
+  "name": "Aabbcc    New"
+}
+НЕ УСПЕШНО. 400 ошибка.
+Name must contain two words with letters only.
+
+####################################################################################################
+
+#####UpdateCustomerNameOneLetterSpaceOneLetter(2)
+PUT: http://localhost:4111/api/v1/customer/profile
+{
+  "name": "a b"
+}
+УСПЕШНО.
+
+{
+    "message": "Profile updated successfully",
+    "customer": {
+        "id": 2,
+        "username": "Aabbcc11",
+        "password": "$2a$10$OswmWrhpGnTqM8..fOT24uiW.JVcm0Hd4x1hJMAlTseiPyVQVOLdC",
+        "name": "a b",
+        "role": "USER",
+        "accounts": [
+            {
+                "id": 2,
+                "accountNumber": "ACC2",
+                "balance": 4.25,
+                "transactions": [
+                    {
+                        "id": 3,
+                        "amount": 1.25,
+                        "type": "TRANSFER_OUT",
+                        "timestamp": "Tue Sep 29 13:18:16 UTC 2026",
+                        "relatedAccountId": 1
+                    },
+                    {
+                        "id": 2,
+                        "amount": 5.5,
+                        "type": "DEPOSIT",
+                        "timestamp": "Tue Sep 29 13:15:27 UTC 2026",
+                        "relatedAccountId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "accountNumber": "ACC3",
+                "balance": 0.0,
+                "transactions": []
+            },
+            {
+                "id": 1,
+                "accountNumber": "ACC1",
+                "balance": 101.75,
+                "transactions": [
+                    {
+                        "id": 4,
+                        "amount": 1.25,
+                        "type": "TRANSFER_IN",
+                        "timestamp": "Tue Sep 29 13:18:16 UTC 2026",
+                        "relatedAccountId": 2
+                    },
+                    {
+                        "id": 1,
+                        "amount": 100.5,
+                        "type": "DEPOSIT",
+                        "timestamp": "Tue Sep 29 13:13:08 UTC 2026",
+                        "relatedAccountId": 1
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+####################################################################################################
+
+#####UpdateCustomerNameEmptyBody(3)
+PUT: http://localhost:4111/api/v1/customer/profile
+{
+  "name": ""
+}
+НЕ УСПЕШНО. 400 ошибка.
+Name must contain two words with letters only.
+
+####################################################################################################
+
+#####UpdateCustomerNameLetterSpaceChar(4)
+PUT: http://localhost:4111/api/v1/customer/profile
+{
+  "name": "Aabbcc $"
+}
+НЕ УСПЕШНО. 400 ошибка.
+Name must contain two words with letters only.
+
+####################################################################################################
+
+#####UpdateCustomerNameBigLetter(5)
+PUT: http://localhost:4111/api/v1/customer/profile
+{
+  "name": "Aabbccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}
+УСПЕШНО.
+
+{
+    "message": "Profile updated successfully",
+    "customer": {
+        "id": 2,
+        "username": "Aabbcc11",
+        "password": "$2a$10$OswmWrhpGnTqM8..fOT24uiW.JVcm0Hd4x1hJMAlTseiPyVQVOLdC",
+        "name": "Aabbccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "role": "USER",
+        "accounts": [
+            {
+                "id": 2,
+                "accountNumber": "ACC2",
+                "balance": 4.25,
+                "transactions": [
+                    {
+                        "id": 3,
+                        "amount": 1.25,
+                        "type": "TRANSFER_OUT",
+                        "timestamp": "Tue Sep 29 13:18:16 UTC 2026",
+                        "relatedAccountId": 1
+                    },
+                    {
+                        "id": 2,
+                        "amount": 5.5,
+                        "type": "DEPOSIT",
+                        "timestamp": "Tue Sep 29 13:15:27 UTC 2026",
+                        "relatedAccountId": 2
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "accountNumber": "ACC3",
+                "balance": 0.0,
+                "transactions": []
+            },
+            {
+                "id": 1,
+                "accountNumber": "ACC1",
+                "balance": 101.75,
+                "transactions": [
+                    {
+                        "id": 4,
+                        "amount": 1.25,
+                        "type": "TRANSFER_IN",
+                        "timestamp": "Tue Sep 29 13:18:16 UTC 2026",
+                        "relatedAccountId": 2
+                    },
+                    {
+                        "id": 1,
+                        "amount": 100.5,
+                        "type": "DEPOSIT",
+                        "timestamp": "Tue Sep 29 13:13:08 UTC 2026",
+                        "relatedAccountId": 1
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+####################################################################################################
