@@ -2,6 +2,7 @@ package org.example.answerBook.collectionsInJava.task26;
 
 public class MainCollectionCleaningAccordingToCondition {
 	public static void main(String[] args) {
+
 		CollectionCleaningAccordingToCondition collectionCleaningAccordingToCondition = new CollectionCleaningAccordingToCondition();
 		collectionCleaningAccordingToCondition.printList();
 		collectionCleaningAccordingToCondition.addElementToList(1);
