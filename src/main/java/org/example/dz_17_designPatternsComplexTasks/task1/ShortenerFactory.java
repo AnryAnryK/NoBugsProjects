@@ -11,7 +11,7 @@ public class ShortenerFactory {
 		this.shorteningStrategy = shorteningStrategy;
 	}
 
-	public void methodShorteningURLs() {
-		shorteningStrategy.methodShorteningURLs();
+	public String methodShorteningURLs(String longUrl) {
+		return shorteningStrategy.methodShorteningURLs(longUrl);
 	}
 }

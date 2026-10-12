@@ -2,15 +2,20 @@ package org.example.dz_17_designPatternsComplexTasks.task1;
 
 public class Main {
 	public static void main(String[] args) {
-		UrlShortenerService.getInstance();
 
-		ShortenerFactory shortenerFactory = new ShortenerFactory(new Base62ShorteningStrategy());
-		shortenerFactory.methodShorteningURLs();
+		UrlShortenerService urlShortenerService1 = new UrlShortenerService(new ShortenerFactory(new Base62ShorteningStrategy()));
+		String shortUrl1 = urlShortenerService1.shortenUrl("https://yandex.ru/");
+		System.out.println("Преобразование из Длинного URL в Короткий: " + shortUrl1);
+		System.out.println("Преобразование из Короткого URL в Длинный: " + urlShortenerService1.expandUrl(shortUrl1));
 
-		shortenerFactory.setShorteningStrategy(new HashingShorteningStrategy());
-		shortenerFactory.methodShorteningURLs();
+		UrlShortenerService urlShortenerService2 = new UrlShortenerService(new ShortenerFactory(new HashingShorteningStrategy()));
+		String shortUrl2 = urlShortenerService2.shortenUrl("https://yandex.ru/");
+		System.out.println("Преобразование из Длинного URL в Короткий: " + shortUrl2);
+		System.out.println("Преобразование из Короткого URL в Длинный: " + urlShortenerService2.expandUrl(shortUrl2));
 
-		shortenerFactory.setShorteningStrategy(new UuidShorteningStrategy());
-		shortenerFactory.methodShorteningURLs();
+		UrlShortenerService urlShortenerService3 = new UrlShortenerService(new ShortenerFactory(new UuidShorteningStrategy()));
+		String shortUrl3 = urlShortenerService3.shortenUrl("https://yandex.ru/");
+		System.out.println("Преобразование из Длинного URL в Короткий: " + shortUrl3);
+		System.out.println("Преобразование из Короткого URL в Длинный: " + urlShortenerService3.expandUrl(shortUrl3));
 	}
 }
