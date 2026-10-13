@@ -256,6 +256,100 @@ Unauthorized access to account.
 
 
 ####################################################################################################
+###########Deposit4999.99Sum(5)
+POST: http://localhost:4111/api/v1/accounts/deposit
+{
+  "id": 2,
+  "balance": 4999.99
+}
+УСПЕШНО (ожидаемый результат). Код 200.
+{
+    "id": 2,
+    "accountNumber": "ACC2",
+    "balance": 19999.989999999998,
+    "transactions": [
+        {
+            "id": 1,
+            "amount": 5000.0,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:39:52 UTC 2026",
+            "relatedAccountId": 2
+        },
+        {
+            "id": 2,
+            "amount": 5000.0,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:39:55 UTC 2026",
+            "relatedAccountId": 2
+        },
+        {
+            "id": 3,
+            "amount": 5000.0,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:39:57 UTC 2026",
+            "relatedAccountId": 2
+        },
+        {
+            "id": 4,
+            "amount": 4999.99,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:41:08 UTC 2026",
+            "relatedAccountId": 2
+        }
+    ]
+}
+####################################################################################################
+###########Deposit0.01Sum(6)
+POST: http://localhost:4111/api/v1/accounts/deposit
+{
+  "id": 2,
+  "balance": 0.01
+}
+УСПЕШНО (ожидаемый результат). Код 200.
+{
+    "id": 2,
+    "accountNumber": "ACC2",
+    "balance": 19999.999999999996,
+    "transactions": [
+        {
+            "id": 5,
+            "amount": 0.01,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:43:04 UTC 2026",
+            "relatedAccountId": 2
+        },
+        {
+            "id": 1,
+            "amount": 5000.0,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:39:52 UTC 2026",
+            "relatedAccountId": 2
+        },
+        {
+            "id": 2,
+            "amount": 5000.0,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:39:55 UTC 2026",
+            "relatedAccountId": 2
+        },
+        {
+            "id": 3,
+            "amount": 5000.0,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:39:57 UTC 2026",
+            "relatedAccountId": 2
+        },
+        {
+            "id": 4,
+            "amount": 4999.99,
+            "type": "DEPOSIT",
+            "timestamp": "Tue Oct 13 09:41:08 UTC 2026",
+            "relatedAccountId": 2
+        }
+    ]
+}
+
+####################################################################################################
 ###########TransferUnderMaxSum(1)
 POST: http://localhost:4111/api/v1/accounts/transfer
 {
@@ -266,7 +360,37 @@ POST: http://localhost:4111/api/v1/accounts/transfer
 СООТВЕТСТВУЕТ ОЖИДАЕМОМУ РЕЗУЛЬТАТУ. 400 ошибка.
 Transfer amount cannot exceed 10000.
 
+####################################################################################################
+###########Transfer9999.99Sum(2)
+POST: http://localhost:4111/api/v1/accounts/transfer
+{
+  "senderAccountId": 2,
+  "receiverAccountId": 1,
+  "amount": 9999.99
+}
+СООТВЕТСТВУЕТ ОЖИДАЕМОМУ РЕЗУЛЬТАТУ (код 200).
+{
+    "message": "Transfer successful",
+    "senderAccountId": 2,
+    "receiverAccountId": 1,
+    "amount": 9999.99
+}
 
+####################################################################################################
+###########Transfer0.01Sum(3)
+POST: http://localhost:4111/api/v1/accounts/transfer
+{
+  "senderAccountId": 2,
+  "receiverAccountId": 1,
+  "amount": 0.01
+}
+СООТВЕТСТВУЕТ ОЖИДАЕМОМУ РЕЗУЛЬТАТУ (код 200).
+{
+    "message": "Transfer successful",
+    "senderAccountId": 2,
+    "receiverAccountId": 1,
+    "amount": 0.01
+}
 
 ####################################################################################################
 ###########TransferUnderEqualsMaxSumButNotEnoughMoneyInAccount(1)
