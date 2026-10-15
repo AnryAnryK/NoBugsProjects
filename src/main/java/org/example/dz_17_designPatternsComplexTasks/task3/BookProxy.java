@@ -12,7 +12,7 @@ public class BookProxy extends Book {
 	public String getContent() {
 		if (loadedContent == null) {
 			System.out.println("Загрузка книги");
-			this.loadedContent = "Какой-то очень длинный текст...";
+			this.loadedContent = book.getContent();
 		}
 		return this.loadedContent;
 	}

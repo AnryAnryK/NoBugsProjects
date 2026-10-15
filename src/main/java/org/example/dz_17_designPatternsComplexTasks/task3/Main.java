@@ -7,6 +7,7 @@ public class Main {
 				bookBuilder.setTitle("Война и мир")
 						.setAuthor("Лев Толстой")
 						.setDescription("Исторический роман про войну с Наполеоном")
+						.setContent("Идёт краткое описание основной сути произведения")
 						.build();
 
 		BookProxy bookProxy = new BookProxy(book);
