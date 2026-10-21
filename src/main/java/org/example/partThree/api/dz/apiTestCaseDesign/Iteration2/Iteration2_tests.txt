@@ -70,7 +70,7 @@ POST: http://localhost:4111/api/v1/accounts/deposit
 }
 
 ####################################################################################################
-###########DepositMoreMaxSum(2)
+###########DepositMaxSum(2)
 POST: http://localhost:4111/api/v1/accounts/deposit
 {
   "id": 2,
@@ -120,20 +120,15 @@ POST: http://localhost:4111/api/v1/accounts/transfer
 }
 
 ####################################################################################################
-###########TransferINotToYouAccount(2)
+###########TransferNotToYouAccount(2)
 POST: http://localhost:4111/api/v1/accounts/transfer
 {
   "senderAccountId": 2,
   "receiverAccountId": 4,
   "amount": 1.25
 }
-УСПЕШНО. КОД 200.
-{
-    "message": "Transfer successful",
-    "amount": 1.25,
-    "receiverAccountId": 4,
-    "senderAccountId": 2
-}
+НЕ УСПЕШНО (ожидаемый результат). КОД 400.
+Invalid transfer: insufficient funds or invalid accounts
 
 ####################################################################################################
 #####UpdateCustomerName(1)
@@ -242,7 +237,7 @@ POST: http://localhost:4111/api/v1/accounts/deposit
   "balance": 1.11
 }
 НЕ УСПЕШНО (ожидаемый результат). Код 403.
-Unauthorized access to account.
+Unauthorized access to account
 
 ####################################################################################################
 ###########DepositToNotYouAccount(4)
@@ -404,7 +399,7 @@ POST: http://localhost:4111/api/v1/accounts/transfer
 Invalid transfer: insufficient funds or invalid accounts.
 
 ####################################################################################################
-###########TransferUnderEqualsMaxSumButAndEnoughMoneyInAccount(2)
+###########TransferEqualsMaxSumAndEnoughMoneyInAccount(2)
 POST: http://localhost:4111/api/v1/accounts/transfer
 {
   "senderAccountId": 2,
