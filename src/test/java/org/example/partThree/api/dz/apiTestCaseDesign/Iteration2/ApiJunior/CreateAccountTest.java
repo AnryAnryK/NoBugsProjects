@@ -11,8 +11,8 @@ public class CreateAccountTest {
 
 	@Test
 	void createAccountTest() {
-		String username = "Aabbcc12";
-		String password = "Aabbcc12!";
+		String username = "Aabbcc13";
+		String password = "Aabbcc13!";
 
 		given()
 				.contentType(ContentType.JSON)

@@ -15,10 +15,10 @@ public class TransferParametrizedNegativeTests {
 
 	public static Stream<Arguments> transferTest() {
 		return Stream.of(
-				Arguments.of(2, 4, 1.25, "Invalid transfer: insufficient funds or invalid accounts"),
-				Arguments.of(2, 1, 10000.01, "Transfer amount cannot exceed 10000"),
-				Arguments.of(2, 1, 10000.00, "Invalid transfer: insufficient funds or invalid accounts"),
-				Arguments.of(2, 1515, 1.25, "Invalid transfer: insufficient funds or invalid accounts")
+				Arguments.of(1, 4, 1.25, "Invalid transfer: insufficient funds or invalid accounts"),
+				Arguments.of(1, 2, 10000.01, "Transfer amount cannot exceed 10000"),
+				Arguments.of(1, 2, 10000.00, "Invalid transfer: insufficient funds or invalid accounts"),
+				Arguments.of(1, 1515, 1.25, "Invalid transfer: insufficient funds or invalid accounts")
 		);
 	}
 
@@ -49,5 +49,21 @@ public class TransferParametrizedNegativeTests {
 				.log().all()
 				.statusCode(HttpStatus.SC_BAD_REQUEST)
 				.body(Matchers.containsString(errorMessage));
+
+		given()
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.auth().preemptive().basic(username, password)
+				.log().all()
+				.get("http://localhost:4111/api/v1/accounts/1/transactions")
+				.then()
+				.log().all()
+				.assertThat()
+				.statusCode(HttpStatus.SC_OK)
+				.body("id", Matchers.notNullValue())
+				.body("amount", Matchers.notNullValue())
+				.body("type", Matchers.hasItem("DEPOSIT"))
+				.body("timestamp", Matchers.notNullValue())
+				.body("relatedAccountId", Matchers.notNullValue());
 	}
 }

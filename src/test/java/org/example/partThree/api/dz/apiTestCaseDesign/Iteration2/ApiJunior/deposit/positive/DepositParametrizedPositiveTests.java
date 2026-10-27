@@ -1,6 +1,7 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.ApiJunior.deposit.positive;
 
 import io.restassured.http.ContentType;
+import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -52,5 +53,21 @@ public class DepositParametrizedPositiveTests {
 				.body("transactions.type", Matchers.hasItem("DEPOSIT"))
 				.body("transactions.timestamp", Matchers.notNullValue())
 				.body("transactions.relatedAccountId", Matchers.notNullValue());
+
+		given()
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.auth().preemptive().basic(username, password)
+				.log().all()
+				.get("http://localhost:4111/api/v1/accounts/1/transactions")
+				.then()
+				.log().all()
+				.assertThat()
+				.statusCode(HttpStatus.SC_OK)
+				.body("id", Matchers.notNullValue())
+				.body("amount", Matchers.notNullValue())
+				.body("type", Matchers.hasItem("DEPOSIT"))
+				.body("timestamp", Matchers.notNullValue())
+				.body("relatedAccountId", Matchers.notNullValue());
 	}
 }

@@ -15,10 +15,10 @@ public class TransferParametrizedPositiveTests {
 
 	public static Stream<Arguments> transferTest() {
 		return Stream.of(
-				Arguments.of(2, 1, 1.25),
-				Arguments.of(2, 1, 9999.99),
-				Arguments.of(2, 1, 10000.00),
-				Arguments.of(2, 1, 0.01)
+				Arguments.of(1, 2, 1.25),
+				Arguments.of(1, 2, 9999.99),
+				Arguments.of(1, 2, 10000.00),
+				Arguments.of(1, 2, 0.01)
 		);
 	}
 
@@ -50,5 +50,21 @@ public class TransferParametrizedPositiveTests {
 				.statusCode(HttpStatus.SC_OK)
 				.body("message", Matchers.containsString("Transfer successful"))
 				.body("amount", Matchers.notNullValue());
+
+		given()
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.auth().preemptive().basic(username, password)
+				.log().all()
+				.get("http://localhost:4111/api/v1/accounts/1/transactions")
+				.then()
+				.log().all()
+				.assertThat()
+				.statusCode(HttpStatus.SC_OK)
+				.body("id", Matchers.notNullValue())
+				.body("amount", Matchers.notNullValue())
+				.body("type", Matchers.hasItem("DEPOSIT"))
+				.body("timestamp", Matchers.notNullValue())
+				.body("relatedAccountId", Matchers.notNullValue());
 	}
 }

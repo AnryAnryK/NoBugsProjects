@@ -46,5 +46,16 @@ public class UpdateCustomerNameParametrizedNegativeTests {
 				.log().all()
 				.statusCode(HttpStatus.SC_BAD_REQUEST)
 				.body(Matchers.containsString(errorMessage));
+
+		given()
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.auth().preemptive().basic(username, password)
+				.log().all()
+				.get("http://localhost:4111/api/v1/customer/profile")
+				.then()
+				.log().all()
+				.statusCode(HttpStatus.SC_OK)
+				.body("name",Matchers.not(Matchers.equalTo(name)));
 	}
 }

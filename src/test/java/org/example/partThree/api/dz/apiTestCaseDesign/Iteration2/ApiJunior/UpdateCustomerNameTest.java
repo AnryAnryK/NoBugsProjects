@@ -12,7 +12,7 @@ public class UpdateCustomerNameTest {
 	void updateCustomerNameTest() {
 		String username = "Aabbcc12";
 		String password = "Aabbcc12!";
-		String name = "Aabbcc NewFour";
+		String name = "Aabbcc NewTwelve";
 
 		given()
 				.contentType(ContentType.JSON)
@@ -28,3 +28,4 @@ public class UpdateCustomerNameTest {
 				.body("message", Matchers.containsString("Profile updated successfully"));
 	}
 }
+
