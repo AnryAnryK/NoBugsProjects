@@ -11,8 +11,8 @@ public class CreateNewUserByAdminTest {
 
 	@Test
 	void createNewUserByAdmin() {
-		String username = "Aabbcc13";
-		String password = "Aabbcc13!";
+		String username = "Aabbcc19";
+		String password = "Aabbcc19!";
 
 		given()
 				.contentType(ContentType.JSON)
@@ -32,5 +32,20 @@ public class CreateNewUserByAdminTest {
 				.body("username", Matchers.equalTo(username))
 				.body("password", Matchers.not(Matchers.equalTo(password)))
 				.body("role", Matchers.equalTo("USER"));
+
+		given()
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.log().all()
+				.auth().preemptive().basic(username, password)
+				.get("http://localhost:4111/api/v1/customer/profile")
+				.then()
+				.log().all()
+				.assertThat()
+				.statusCode(HttpStatus.SC_OK)
+				.body("id",Matchers.notNullValue())
+				.body("username",Matchers.notNullValue())
+				.body("password",Matchers.notNullValue())
+				.body("role",Matchers.equalTo("USER"));
 	}
 }

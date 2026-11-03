@@ -26,6 +26,17 @@ public class UpdateCustomerNameTest {
 				.statusCode(HttpStatus.SC_OK)
 				.body("customer.name", Matchers.containsString(name))
 				.body("message", Matchers.containsString("Profile updated successfully"));
+
+		given()
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.auth().preemptive().basic(username, password)
+				.log().all()
+				.get("http://localhost:4111/api/v1/customer/profile")
+				.then()
+				.log().all()
+				.statusCode(HttpStatus.SC_OK)
+				.body("name", Matchers.equalTo(name));
 	}
 }
 
