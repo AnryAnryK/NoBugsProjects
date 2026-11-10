@@ -1,5 +1,8 @@
-package org.example.mockInterview.timur.task2;
+package task2;
 
+import org.example.mockInterview.timur.task2.Book;
+import org.example.mockInterview.timur.task2.Library;
+import org.example.mockInterview.timur.task2.LibraryManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
