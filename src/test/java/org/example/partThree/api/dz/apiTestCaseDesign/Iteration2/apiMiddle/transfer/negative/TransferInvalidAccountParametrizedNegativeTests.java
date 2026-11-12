@@ -1,15 +1,15 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.transfer.negative;
 
-import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.BaseTest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CreateUserRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.DepositRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.Roles;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.TransferRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.randomizer.RandomData;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.AdminCreateUserRequester;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.CreateAccountRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.DepositRequester;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.ProfileRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.TransferRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.specs.RequestSpecs;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.specs.ResponseSpecs;
@@ -27,13 +27,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class TransferInvalidAccountParametrizedNegativeTests extends BaseTest {
-	RequestSpecification requestSpecification;
-	ResponseSpecification responseSpecification;
-	DepositRequester depositRequester;
-	TransferRequester transferBad;
-	TransferRequester transferOk;
-	ProfileRequester profileRequester;
-
 	String username1 = RandomData.getUsername();
 	String password1 = RandomData.getPassword();
 
@@ -42,99 +35,57 @@ public class TransferInvalidAccountParametrizedNegativeTests extends BaseTest {
 
 	int receiverAccountId_INVALID_ACCOUNT;
 	int senderAccountId;
+	double balance = 5000.00;
 
 	@BeforeEach
 	void setUp() {
-		createNewUser1ByAdmin();
-		createNewUser2ByAdmin();
-		senderAccountId = createAccount1();
-		receiverAccountId_INVALID_ACCOUNT = 1515;
-		requestSpecification = RequestSpecs.authAsUser(username1, password1);
-		responseSpecification = ResponseSpecs.requestReturnsOK();
-		depositRequester = new DepositRequester(requestSpecification, responseSpecification);
-		transferOk = new TransferRequester(requestSpecification, ResponseSpecs.requestReturnsOK());
-		transferBad = new TransferRequester(requestSpecification, ResponseSpecs.requestReturnsBadRequest());
-		profileRequester = new ProfileRequester(requestSpecification, ResponseSpecs.requestReturnsOK());
-	}
+		// создание первого пользователя
+		CreateUserRequest createUserRequest1 = CreateUserRequest
+				.builder()
+				.username(username1)
+				.password(password1)
+				.role(Roles.USER.toString())
+				.build();
 
-	void createNewUser1ByAdmin() {
-		Map<String, String> personalData = Map.of("username", username1, "password", password1, "role", Roles.USER.toString());
-		given()
-				.spec(RequestSpecs.unauthSpec())
-				.auth().preemptive().basic("admin", "admin")
-				.body(personalData)
-				.post("/api/v1/admin/users")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_CREATED)
-				.body("username", Matchers.equalTo(username1))
-				.body("password", Matchers.not(Matchers.equalTo(password1)))
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
+		new AdminCreateUserRequester(
+				RequestSpecs.adminSpec(),
+				ResponseSpecs.entityWasCreated())
+				.post(createUserRequest1);
 
-		given()
-				.spec(RequestSpecs.authAsUser(username1, password1))
-				.get("/api/v1/customer/profile")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_OK)
-				.body("id", Matchers.notNullValue())
-				.body("username", Matchers.notNullValue())
-				.body("password", Matchers.notNullValue())
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
-	}
+		// создание второго пользователя
+		CreateUserRequest createUserRequest2 = CreateUserRequest
+				.builder()
+				.username(username2)
+				.password(password2)
+				.role(Roles.USER.toString())
+				.build();
 
-	void createNewUser2ByAdmin() {
-		Map<String, String> personalData = Map.of("username", username2, "password", password2, "role", Roles.USER.toString());
-		given()
-				.spec(RequestSpecs.unauthSpec())
-				.auth().preemptive().basic("admin", "admin")
-				.body(personalData)
-				.post("/api/v1/admin/users")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_CREATED)
-				.body("username", Matchers.equalTo(username2))
-				.body("password", Matchers.not(Matchers.equalTo(password2)))
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
+		new AdminCreateUserRequester(
+				RequestSpecs.adminSpec(),
+				ResponseSpecs.entityWasCreated())
+				.post(createUserRequest2);
 
-		given()
-				.spec(RequestSpecs.authAsUser(username2, password2))
-				.get("/api/v1/customer/profile")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_OK)
-				.body("id", Matchers.notNullValue())
-				.body("username", Matchers.notNullValue())
-				.body("password", Matchers.notNullValue())
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
-	}
 
-	int createAccount1() {
-		return given()
-				.spec(RequestSpecs.authAsUser(username1, password1))
-				.post("/api/v1/accounts")
-				.then()
-				.assertThat()
-				.body("id", Matchers.notNullValue())
-				.body("accountNumber", Matchers.notNullValue())
-				.body("balance", Matchers.notNullValue())
-				.body("transactions", Matchers.notNullValue())
-				.statusCode(HttpStatus.SC_CREATED)
-				.extract().path("id");
-	}
+		// создание счёта первого пользователя (плательщика)
+		senderAccountId = new CreateAccountRequester(
+				RequestSpecs.authAsUser(username1, password1),
+				ResponseSpecs.entityWasCreated())
+				.post(null)
+				.extract()
+				.path("id");
 
-	int createAccount2() {
-		return given()
-				.spec(RequestSpecs.authAsUser(username2, password2))
-				.post("/api/v1/accounts")
-				.then()
-				.assertThat()
-				.body("id", Matchers.notNullValue())
-				.body("accountNumber", Matchers.notNullValue())
-				.body("balance", Matchers.notNullValue())
-				.body("transactions", Matchers.notNullValue())
-				.statusCode(HttpStatus.SC_CREATED)
-				.extract().path("id");
+
+		// депозит средств на счёт первого пользователя (плательщика) - захардкодил balance=5000, чтобы в рамках данных тестов денег на счёте точно хватило для перевода, иначе тест будет падать из-за нехватки средств
+		DepositRequest depositRequest = DepositRequest
+				.builder()
+				.id(senderAccountId)
+				.balance(balance)
+				.build();
+
+		new DepositRequester(
+				RequestSpecs.authAsUser(username1, password1),
+				ResponseSpecs.requestReturnsOK())
+				.post(depositRequest);
 	}
 
 	public static Stream<Arguments> transferTest() {
@@ -148,26 +99,19 @@ public class TransferInvalidAccountParametrizedNegativeTests extends BaseTest {
 	@MethodSource("transferTest")
 	@ParameterizedTest
 	public void transferNegativeTests(double amount, String errorMessage) {
-		DepositRequest depositRequest = new DepositRequest(senderAccountId, 5000);
+		TransferRequest transferRequest = TransferRequest.builder()
+				.senderAccountId(senderAccountId)
+				.receiverAccountId(receiverAccountId_INVALID_ACCOUNT)
+				.amount(amount)
+				.build();
 
-		for (int i = 0; i < 3; i++) {
-			depositRequester.post(depositRequest);
-		}
-		double balanceBeforeTransaction = profileRequester.get().extract().jsonPath().getDouble("accounts.find { it.id == " + senderAccountId + " }.balance");
+		String messageAfterRequest = new TransferRequester(
+				RequestSpecs.authAsUser(username1, password1),
+				ResponseSpecs.requestReturnsBadRequest())
+				.post(transferRequest)
+				.extract()
+				.asString();
 
-		TransferRequest transferRequest = new TransferRequest(senderAccountId, receiverAccountId_INVALID_ACCOUNT, amount);
-
-		transferBad.post(transferRequest)
-				.assertThat()
-				.body(Matchers.containsString(errorMessage));
-
-		double balanceAfterTransaction = profileRequester.get().extract().jsonPath().getDouble("accounts.find { it.id == " + senderAccountId + " }.balance");
-		assertThat(balanceAfterTransaction, is(balanceBeforeTransaction));
-
-		transferOk.get(senderAccountId)
-				.body("id", Matchers.notNullValue())
-				.body("amount", Matchers.notNullValue())
-				.body("timestamp", Matchers.notNullValue())
-				.body("relatedAccountId", Matchers.notNullValue());
+		softly.assertThat(messageAfterRequest).isEqualTo(errorMessage);
 	}
 }

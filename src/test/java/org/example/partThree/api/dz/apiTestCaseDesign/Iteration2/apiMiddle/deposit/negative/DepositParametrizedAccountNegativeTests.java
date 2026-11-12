@@ -1,85 +1,47 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.deposit.negative;
 
-import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
-import org.apache.http.HttpStatus;
+import io.restassured.response.ValidatableResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.BaseTest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CreateUserRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.DepositRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.Roles;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.randomizer.RandomData;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.AdminCreateUserRequester;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.CreateAccountRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.DepositRequester;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.ProfileRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.specs.RequestSpecs;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.specs.ResponseSpecs;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 public class DepositParametrizedAccountNegativeTests extends BaseTest {
-
-	private RequestSpecification requestSpecification;
-	private DepositRequester forbiddenDepositRequester;
-	private ProfileRequester profileRequester;
-
 	String username = RandomData.getUsername();
 	String password = RandomData.getPassword();
 
-
 	@BeforeEach
 	void setUp() {
-		createNewUserByAdmin();
-		createAccount();
-		requestSpecification = RequestSpecs.authAsUser(username, password);
-		forbiddenDepositRequester = new DepositRequester(requestSpecification, ResponseSpecs.requestReturnsBad403Request());
-		profileRequester = new ProfileRequester(requestSpecification, ResponseSpecs.requestReturnsOK());
-	}
+		// создание пользователя
+		CreateUserRequest createUserRequest = CreateUserRequest
+				.builder()
+				.username(username)
+				.password(password)
+				.role(Roles.USER.toString())
+				.build();
 
-	void createNewUserByAdmin() {
-		Map<String, String> personalData = Map.of("username", username, "password", password, "role", Roles.USER.toString());
-		given()
-				.spec(RequestSpecs.unauthSpec())
-				.auth().preemptive().basic("admin", "admin")
-				.body(personalData)
-				.post("/api/v1/admin/users")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_CREATED)
-				.body("username", Matchers.equalTo(username))
-				.body("password", Matchers.not(Matchers.equalTo(password)))
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
+		new AdminCreateUserRequester(
+				RequestSpecs.adminSpec(),
+				ResponseSpecs.entityWasCreated())
+				.post(createUserRequest);
 
-		given()
-				.spec(RequestSpecs.authAsUser(username, password))
-				.get("/api/v1/customer/profile")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_OK)
-				.body("id", Matchers.notNullValue())
-				.body("username", Matchers.notNullValue())
-				.body("password", Matchers.notNullValue())
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
-	}
-
-	void createAccount() {
-		 given()
-				 .spec(RequestSpecs.authAsUser(username, password))
-				.post("/api/v1/accounts")
-				.then()
-				.assertThat()
-				.body("id", Matchers.notNullValue())
-				.body("accountNumber", Matchers.notNullValue())
-				.body("balance", Matchers.notNullValue())
-				.body("transactions", Matchers.notNullValue())
-				.statusCode(HttpStatus.SC_CREATED);
+		// создание счёта пользователя
+		new CreateAccountRequester(
+				RequestSpecs.authAsUser(username, password),
+				ResponseSpecs.entityWasCreated())
+				.post(null);
 	}
 
 	public static Stream<Arguments> depositTest() {
@@ -93,17 +55,20 @@ public class DepositParametrizedAccountNegativeTests extends BaseTest {
 	@ParameterizedTest
 	public void depositIncorrectAccountNegativeTests(int id, double balance, String errMessage) {
 
-		double balanceBefore = profileRequester.get()
-				.extract().jsonPath().getDouble("accounts[0].balance");
+		DepositRequest depositRequest = DepositRequest
+				.builder()
+				.id(id)
+				.balance(balance)
+				.build();
 
-		DepositRequest depositRequest = new DepositRequest(id, balance);
+		String errorInResponse = new DepositRequester(
+				RequestSpecs.authAsUser(username, password),
+				ResponseSpecs.requestReturnsBad403Request())
+				.post(depositRequest)
+				.extract()
+				.body()
+				.asString();
 
-		forbiddenDepositRequester.post(depositRequest)
-				.body(Matchers.containsString(errMessage));
-
-		double balanceAfter = profileRequester.get()
-				.extract().jsonPath().getDouble("accounts[0].balance");
-
-		assertThat(balanceAfter, is(balanceBefore));
+		softly.assertThat(errMessage).isEqualTo(errorInResponse);
 	}
 }

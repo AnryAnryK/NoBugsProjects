@@ -1,23 +1,15 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DepositRequest extends BaseModel {
 	private int id;
 	private double balance;
-
-	public DepositRequest(int id, double balance) {
-		this.id = id;
-		this.balance = balance;
-	}
-
-	public DepositRequest(double balance) {
-		this.balance = balance;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public double getBalance() {
-		return balance;
-	}
 }

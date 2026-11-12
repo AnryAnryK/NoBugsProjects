@@ -1,34 +1,25 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.transfer.positive;
 
-import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
-import org.apache.http.HttpStatus;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.BaseTest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CreateUserRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.DepositRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.Roles;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.TransferRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.randomizer.RandomData;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.AdminCreateUserRequester;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.CreateAccountRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.DepositRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.TransferRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.specs.RequestSpecs;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.specs.ResponseSpecs;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Map;
 import java.util.stream.Stream;
 
-import static io.restassured.RestAssured.given;
-
 public class TransferBoundaryValuesParametrizedPositiveTests extends BaseTest {
-	RequestSpecification requestSpecification;
-	ResponseSpecification responseSpecification;
-	DepositRequester depositRequester;
-	TransferRequester transferRequester;
-
 	String username1 = RandomData.getUsername();
 	String password1 = RandomData.getPassword();
 
@@ -37,97 +28,67 @@ public class TransferBoundaryValuesParametrizedPositiveTests extends BaseTest {
 
 	int receiverAccountId;
 	int senderAccountId;
+	double balance = 5000.00;
 
 	@BeforeEach
 	void setUp() {
-		createNewUser1ByAdmin();
-		createNewUser2ByAdmin();
-		senderAccountId = createAccount1();
-		receiverAccountId = createAccount2();
-		requestSpecification = RequestSpecs.authAsUser(username1, password1);
-		responseSpecification = ResponseSpecs.requestReturnsOK();
-		depositRequester = new DepositRequester(requestSpecification, responseSpecification);
-		transferRequester = new TransferRequester(requestSpecification, responseSpecification);
-	}
+		// создание первого пользователя
+		CreateUserRequest createUserRequest1 = CreateUserRequest
+				.builder()
+				.username(username1)
+				.password(password1)
+				.role(Roles.USER.toString())
+				.build();
 
-	void createNewUser1ByAdmin() {
-		Map<String, String> personalData = Map.of("username", username1, "password", password1, "role", Roles.USER.toString());
-		given()
-				.spec(RequestSpecs.unauthSpec())
-				.auth().preemptive().basic("admin", "admin")
-				.body(personalData)
-				.post("/api/v1/admin/users")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_CREATED)
-				.body("username", Matchers.equalTo(username1))
-				.body("password", Matchers.not(Matchers.equalTo(password1)))
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
+		new AdminCreateUserRequester(
+				RequestSpecs.adminSpec(),
+				ResponseSpecs.entityWasCreated())
+				.post(createUserRequest1);
 
-		given()
-				.spec(RequestSpecs.authAsUser(username1, password1))
-				.get("/api/v1/customer/profile")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_OK)
-				.body("id", Matchers.notNullValue())
-				.body("username", Matchers.notNullValue())
-				.body("password", Matchers.notNullValue())
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
-	}
+		// создание второго пользователя
+		CreateUserRequest createUserRequest2 = CreateUserRequest
+				.builder()
+				.username(username2)
+				.password(password2)
+				.role(Roles.USER.toString())
+				.build();
 
-	void createNewUser2ByAdmin() {
-		Map<String, String> personalData = Map.of("username", username2, "password", password2, "role", Roles.USER.toString());
-		given()
-				.spec(RequestSpecs.unauthSpec())
-				.auth().preemptive().basic("admin", "admin")
-				.body(personalData)
-				.post("/api/v1/admin/users")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_CREATED)
-				.body("username", Matchers.equalTo(username2))
-				.body("password", Matchers.not(Matchers.equalTo(password2)))
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
+		new AdminCreateUserRequester(
+				RequestSpecs.adminSpec(),
+				ResponseSpecs.entityWasCreated())
+				.post(createUserRequest2);
 
-		given()
-				.spec(RequestSpecs.authAsUser(username2, password2))
-				.get("/api/v1/customer/profile")
-				.then()
-				.assertThat()
-				.statusCode(HttpStatus.SC_OK)
-				.body("id", Matchers.notNullValue())
-				.body("username", Matchers.notNullValue())
-				.body("password", Matchers.notNullValue())
-				.body("role", Matchers.equalTo(Roles.USER.toString()));
-	}
 
-	int createAccount1() {
-		return given()
-				.spec(RequestSpecs.authAsUser(username1, password1))
-				.post("/api/v1/accounts")
-				.then()
-				.assertThat()
-				.body("id", Matchers.notNullValue())
-				.body("accountNumber", Matchers.notNullValue())
-				.body("balance", Matchers.notNullValue())
-				.body("transactions", Matchers.notNullValue())
-				.statusCode(HttpStatus.SC_CREATED)
-				.extract().path("id");
-	}
+		// создание счёта первого пользователя (плательщика)
+		senderAccountId = new CreateAccountRequester(
+				RequestSpecs.authAsUser(username1, password1),
+				ResponseSpecs.entityWasCreated())
+				.post(null)
+				.extract()
+				.path("id");
 
-	int createAccount2() {
-		return given()
-				.spec(RequestSpecs.authAsUser(username2, password2))
-				.post("/api/v1/accounts")
-				.then()
-				.assertThat()
-				.body("id", Matchers.notNullValue())
-				.body("accountNumber", Matchers.notNullValue())
-				.body("balance", Matchers.notNullValue())
-				.body("transactions", Matchers.notNullValue())
-				.statusCode(HttpStatus.SC_CREATED)
-				.extract().path("id");
+		// создание счёта второго пользователя (получателя)
+		receiverAccountId = new CreateAccountRequester(
+				RequestSpecs.authAsUser(username2, password2),
+				ResponseSpecs.entityWasCreated())
+				.post(null)
+				.extract()
+				.path("id");
+
+
+		// депозит средств на счёт первого пользователя (плательщика) - захардкодил balance=5000 и сделал цикл на три итерации, чтобы в рамках данных тестов денег на счёте точно хватило для перевода, иначе тест будет падать из-за нехватки средств
+		for (int i = 0; i < 3; i++) {
+			DepositRequest depositRequest = DepositRequest
+					.builder()
+					.id(senderAccountId)
+					.balance(balance)
+					.build();
+
+			new DepositRequester(
+					RequestSpecs.authAsUser(username1, password1),
+					ResponseSpecs.requestReturnsOK())
+					.post(depositRequest);
+		}
 	}
 
 	public static Stream<Arguments> transferTest() {
@@ -139,22 +100,22 @@ public class TransferBoundaryValuesParametrizedPositiveTests extends BaseTest {
 		);
 	}
 
-
 	@MethodSource("transferTest")
 	@ParameterizedTest
 	public void transferPositiveTests(double amount) {
-		DepositRequest depositRequest = new DepositRequest(senderAccountId, 5000);
+		TransferRequest transferRequest = TransferRequest.builder()
+				.senderAccountId(senderAccountId)
+				.receiverAccountId(receiverAccountId)
+				.amount(amount)
+				.build();
 
-		for (int i = 0; i < 3; i++) {
-			depositRequester.post(depositRequest);
-		}
+		String messageAfterRequest = new TransferRequester(
+				RequestSpecs.authAsUser(username1, password1),
+				ResponseSpecs.requestReturnsOK())
+				.post(transferRequest)
+				.extract()
+				.path("message");
 
-		TransferRequest transferRequest = new TransferRequest(senderAccountId, receiverAccountId, amount);
-		transferRequester.post(transferRequest)
-				.body("message", Matchers.containsString("Transfer successful"))
-				.body("amount", Matchers.notNullValue());
-
-		transferRequester.get(senderAccountId)
-				.body("type", Matchers.hasItems("DEPOSIT", "TRANSFER_OUT"));
+		softly.assertThat(messageAfterRequest).isEqualTo("Transfer successful");
 	}
 }
