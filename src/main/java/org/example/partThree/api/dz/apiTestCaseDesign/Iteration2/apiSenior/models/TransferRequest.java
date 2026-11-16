@@ -1,0 +1,16 @@
+package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class TransferRequest extends BaseModel {
+	private int senderAccountId;
+	private int receiverAccountId;
+	private double amount;
+}
