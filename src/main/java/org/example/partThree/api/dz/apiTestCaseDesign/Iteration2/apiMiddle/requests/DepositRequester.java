@@ -1,0 +1,33 @@
+package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests;
+
+import io.restassured.response.ValidatableResponse;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.DepositRequest;
+
+import static io.restassured.RestAssured.given;
+
+public class DepositRequester extends Request<DepositRequest> {
+
+	public DepositRequester(RequestSpecification requestSpecification, ResponseSpecification responseSpecification) {
+		super(requestSpecification, responseSpecification);
+	}
+
+	public ValidatableResponse post(DepositRequest model) {
+		return given()
+				.spec(requestSpecification)
+				.body(model)
+				.post("/api/v1/accounts/deposit")
+				.then()
+				.assertThat()
+				.spec(responseSpecification);
+	}
+	public ValidatableResponse get() {
+		return given()
+				.spec(requestSpecification)
+				.get("/api/v1/customer/accounts")
+				.then()
+				.assertThat()
+				.spec(responseSpecification);
+	}
+}
