@@ -1,9 +1,10 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.deposit.negative;
 
-import io.restassured.response.ValidatableResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.BaseTest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.messages.AlertMessages;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CreateUserRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.DepositRequest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.DepositResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.Roles;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.randomizer.RandomData;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.AdminCreateUserRequester;
@@ -21,6 +22,9 @@ import java.util.stream.Stream;
 public class DepositParametrizedAccountNegativeTests extends BaseTest {
 	String username = RandomData.getUsername();
 	String password = RandomData.getPassword();
+	static final double setRandomBalance = RandomData.setBalance();
+	static final String errorMessage = AlertMessages.Profile.UNAUTHORISED_ACCESS_TO_ACCOUNT.getMessage();
+	static final long invalidAccountId = RandomData.setInvalidAccountId();
 
 	@BeforeEach
 	void setUp() {
@@ -41,20 +45,19 @@ public class DepositParametrizedAccountNegativeTests extends BaseTest {
 		new CreateAccountRequester(
 				RequestSpecs.authAsUser(username, password),
 				ResponseSpecs.entityWasCreated())
-				.post(null);
+				.post();
 	}
 
 	public static Stream<Arguments> depositTest() {
 		return Stream.of(
-				Arguments.of(1515, 50.01, "Unauthorized access to account"),
-				Arguments.of(4, 0.01, "Unauthorized access to account")
+				Arguments.of(invalidAccountId, setRandomBalance, errorMessage),
+				Arguments.of(invalidAccountId, setRandomBalance, errorMessage)
 		);
 	}
 
 	@MethodSource("depositTest")
 	@ParameterizedTest
-	public void depositIncorrectAccountNegativeTests(int id, double balance, String errMessage) {
-
+	public void depositIncorrectAccountNegativeTests(long id, double balance, String errMessage) {
 		DepositRequest depositRequest = DepositRequest
 				.builder()
 				.id(id)
@@ -68,7 +71,18 @@ public class DepositParametrizedAccountNegativeTests extends BaseTest {
 				.extract()
 				.body()
 				.asString();
-
 		softly.assertThat(errMessage).isEqualTo(errorInResponse);
+
+		DepositResponse[] balanceAfterDepositOnInvalidAccount = new DepositRequester(
+				RequestSpecs.authAsUser(username, password),
+				ResponseSpecs.requestReturnsOK())
+				.get()
+				.extract()
+				.body()
+				.as(DepositResponse[].class);
+
+		softly.assertThat(balanceAfterDepositOnInvalidAccount[0]
+						.getBalance())
+				.isEqualTo(0.0);
 	}
 }

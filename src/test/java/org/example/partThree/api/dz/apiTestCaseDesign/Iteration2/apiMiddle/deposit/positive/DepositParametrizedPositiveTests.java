@@ -1,9 +1,9 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.deposit.positive;
 
-import io.restassured.response.ValidatableResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.BaseTest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CreateUserRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.DepositRequest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.DepositResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.Roles;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.randomizer.RandomData;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.AdminCreateUserRequester;
@@ -11,6 +11,7 @@ import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.reque
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.DepositRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.specs.RequestSpecs;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.specs.ResponseSpecs;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CreateAccountResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -21,7 +22,11 @@ import java.util.stream.Stream;
 public class DepositParametrizedPositiveTests extends BaseTest {
 	String username = RandomData.getUsername();
 	String password = RandomData.getPassword();
-	int accountId;
+	long accountId;
+	static final double setRandomBalance = RandomData.setBalance();
+	static final double setBalance5000 = RandomData.setBalance5000();
+	static final double setBalance4999and99 = RandomData.setBalance4999and99();
+	static final double setAmount00and01 = RandomData.setAmount00and01();
 
 	@BeforeEach
 	void setUp() {
@@ -42,39 +47,52 @@ public class DepositParametrizedPositiveTests extends BaseTest {
 		accountId = new CreateAccountRequester(
 				RequestSpecs.authAsUser(username, password),
 				ResponseSpecs.entityWasCreated())
-				.post(null)
+				.post()
 				.extract()
-				.path("id");
+				.as(CreateAccountResponse.class)
+				.getId();
 	}
-
 
 	public static Stream<Arguments> depositTest() {
 		return Stream.of(
-				Arguments.of(5.01),
-				Arguments.of(5000.00),
-				Arguments.of(4999.99),
-				Arguments.of(0.01)
+				Arguments.of(setRandomBalance),
+				Arguments.of(setBalance5000),
+				Arguments.of(setBalance4999and99),
+				Arguments.of(setAmount00and01)
 		);
 	}
 
 	@MethodSource("depositTest")
 	@ParameterizedTest
 	public void depositPositiveTests(double balance) {
+		// сумма на счету до депозита
+		DepositResponse[] accountsBeforeDeposit = new DepositRequester(
+				RequestSpecs.authAsUser(username, password),
+				ResponseSpecs.requestReturnsOK())
+				.get()
+				.extract()
+				.as(DepositResponse[].class);
+
+		double balanceBeforeDeposit = accountsBeforeDeposit[0].getBalance();
+
+		// депозит
 		DepositRequest depositRequest = DepositRequest
 				.builder()
 				.id(accountId)
 				.balance(balance)
 				.build();
 
-		ValidatableResponse amount = new DepositRequester(
+		// сумма на депозите после .post: сверяем равенство сумм
+		DepositResponse depositResponse = new DepositRequester(
 				RequestSpecs.authAsUser(username, password),
 				ResponseSpecs.requestReturnsOK())
-				.post(depositRequest);
+				.post(depositRequest)
+				.extract()
+				.as(DepositResponse.class);
 
-		double transactionAmount = amount.extract().jsonPath().getDouble("transactions[0].amount");
-		double accountBalance = amount.extract().jsonPath().getDouble("balance");
-
-		softly.assertThat(transactionAmount).isEqualTo(balance);
-		softly.assertThat(transactionAmount).isEqualTo(accountBalance);
+		//сверка сумм до и после в подтверждение произведённого депозита
+		softly.assertThat(depositResponse
+						.getBalance())
+				.isEqualTo(balanceBeforeDeposit + balance);
 	}
 }

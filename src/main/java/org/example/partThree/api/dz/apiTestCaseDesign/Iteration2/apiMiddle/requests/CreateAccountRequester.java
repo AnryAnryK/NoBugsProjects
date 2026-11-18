@@ -20,4 +20,12 @@ public class CreateAccountRequester extends Request {
 				.assertThat()
 				.spec(responseSpecification);
 	}
+	public ValidatableResponse post() {
+		return given()
+				.spec(requestSpecification)
+				.post("/api/v1/accounts")
+				.then()
+				.assertThat()
+				.spec(responseSpecification);
+	}
 }

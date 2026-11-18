@@ -22,4 +22,12 @@ public class DepositRequester extends Request<DepositRequest> {
 				.assertThat()
 				.spec(responseSpecification);
 	}
+	public ValidatableResponse get() {
+		return given()
+				.spec(requestSpecification)
+				.get("/api/v1/customer/accounts")
+				.then()
+				.assertThat()
+				.spec(responseSpecification);
+	}
 }

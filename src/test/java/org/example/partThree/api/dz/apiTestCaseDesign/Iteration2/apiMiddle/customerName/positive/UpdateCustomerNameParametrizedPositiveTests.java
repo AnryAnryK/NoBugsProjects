@@ -1,8 +1,10 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.customerName.positive;
 
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.BaseTest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.messages.AlertMessages;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CreateUserRequest;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CustomerNameRequest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.CustomerNameResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models.Roles;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.randomizer.RandomData;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.requests.AdminCreateUserRequester;
@@ -19,6 +21,10 @@ import java.util.stream.Stream;
 public class UpdateCustomerNameParametrizedPositiveTests extends BaseTest {
 	String username = RandomData.getUsername();
 	String password = RandomData.getPassword();
+	static final String actualMessageValidation = AlertMessages.Profile.PROFILE_UPDATED_SUCCESSFULLY.getMessage();
+	static final String changeOnValidUsername10Plus10Characters = RandomData.getNewUsername10Plus10Characters();
+	static final String changeOnValidUsername30Plus30Characters = RandomData.getNewUsername30Plus30Characters();
+	static final String changeOnValidUsername1Plus1Characters = RandomData.getNewUsername1Plus1Characters();
 
 	@BeforeEach
 	void setUp() {
@@ -38,9 +44,9 @@ public class UpdateCustomerNameParametrizedPositiveTests extends BaseTest {
 
 	public static Stream<Arguments> updateCustomerName() {
 		return Stream.of(
-				Arguments.of("Aabbcc New"),
-				Arguments.of("a b"),
-				Arguments.of("Aabbccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+				Arguments.of(changeOnValidUsername10Plus10Characters),
+				Arguments.of(changeOnValidUsername1Plus1Characters),
+				Arguments.of(changeOnValidUsername30Plus30Characters)
 		);
 	}
 
@@ -53,12 +59,23 @@ public class UpdateCustomerNameParametrizedPositiveTests extends BaseTest {
 				.name(name)
 				.build();
 
-		String customerNameResponse = new ProfileRequester(
+		String customerNameMessageResponse = new ProfileRequester(
 				RequestSpecs.authAsUser(username, password),
 				ResponseSpecs.requestReturnsOK())
 				.put(customerNameRequest)
 				.extract()
-				.path("customer.name");
-		softly.assertThat(customerNameResponse).isEqualTo(name);
+				.as(CustomerNameResponse.class)
+				.getMessage();
+		softly.assertThat(customerNameMessageResponse).isEqualTo(actualMessageValidation);
+
+		//проверяем через .get что имя поменялось на новое корректное
+		String actualName = new ProfileRequester(
+				RequestSpecs.authAsUser(username, password),
+				ResponseSpecs.requestReturnsOK())
+				.get()
+				.extract()
+				.as(CustomerNameResponse.class)
+				.getName();
+		softly.assertThat(actualName).isEqualTo(name);
 	}
 }

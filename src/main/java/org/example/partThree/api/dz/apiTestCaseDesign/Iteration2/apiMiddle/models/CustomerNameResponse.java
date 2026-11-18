@@ -1,37 +1,36 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiMiddle.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.List;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomerNameResponse extends BaseModel {
-	private String newName;
+	private String message;
+	private Customer customer;
+	private int id;
+	private String username;
+	private String password;
+	private String name;
+	private String role;
+	private List<String> accounts;
 
-	public CustomerNameResponse() {
-	}
 
-	public CustomerNameResponse(String newName) {
-		this.newName = newName;
-	}
-
-	public String getNewName() {
-		return newName;
-	}
-
-	public void setNewName(String newName) {
-		this.newName = newName;
-	}
-
-	public static CustomerNameResponseBuilder builder() {
-		return new CustomerNameResponseBuilder();
-	}
-
-	public static class CustomerNameResponseBuilder {
-		private String newName;
-
-		public CustomerNameResponseBuilder newName(String newName) {
-			this.newName = newName;
-			return this;
-		}
-
-		public CustomerNameResponse build() {
-			return new CustomerNameResponse(newName);
-		}
+	@Data
+	@Builder
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class Customer {
+		private int id;
+		private String username;
+		private String password;
+		private String name;
+		private String role;
+		private List<String> accounts;
 	}
 }
