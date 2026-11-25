@@ -1,14 +1,13 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.deposit.negative;
 
-import io.restassured.response.ValidatableResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.BaseTest;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.CreateUserRequest;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.DepositRequest;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.Roles;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.messages.AlertMessages;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.DepositResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.randomizer.RandomData;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.AdminCreateUserRequester;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.CreateAccountRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.DepositRequester;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.steps.CreateAccountByUserStep;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.steps.CreateUserByAdminStep;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.steps.DepositStep;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.specs.RequestSpecs;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.specs.ResponseSpecs;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,59 +15,76 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
+
 public class DepositParametrizedAccountNegativeTests extends BaseTest {
-	String username = RandomData.getUsername();
-	String password = RandomData.getPassword();
+	String username;
+	String password;
+	long accountId;
+	static final double setRandomBalance = RandomData.getBalance();
+	static final String errorMessage = AlertMessages.Profile.UNAUTHORISED_ACCESS_TO_ACCOUNT.getMessage();
+	static final long invalidAccountId = RandomData.getInvalidAccountId();
 
 	@BeforeEach
 	void setUp() {
 		// создание пользователя
-		CreateUserRequest createUserRequest = CreateUserRequest
-				.builder()
-				.username(username)
-				.password(password)
-				.role(Roles.USER.toString())
-				.build();
-
-		new AdminCreateUserRequester(
-				RequestSpecs.adminSpec(),
-				ResponseSpecs.entityWasCreated())
-				.post(createUserRequest);
+		CreateUserByAdminStep createUserByAdminStep = new CreateUserByAdminStep();
+		createUserByAdminStep.createUserByAdmin();
+		this.username = createUserByAdminStep.username;
+		this.password = createUserByAdminStep.password;
 
 		// создание счёта пользователя
-		new CreateAccountRequester(
-				RequestSpecs.authAsUser(username, password),
-				ResponseSpecs.entityWasCreated())
-				.post(null);
+		CreateAccountByUserStep createAccountByUserStep = new CreateAccountByUserStep(username, password);
+		createAccountByUserStep.createAccountByUser();
+		this.accountId = createAccountByUserStep.accountId;
 	}
 
 	public static Stream<Arguments> depositTest() {
 		return Stream.of(
-				Arguments.of(1515, 50.01, "Unauthorized access to account"),
-				Arguments.of(4, 0.01, "Unauthorized access to account")
+				Arguments.of(invalidAccountId, setRandomBalance, errorMessage),
+				Arguments.of(invalidAccountId, setRandomBalance, errorMessage)
 		);
 	}
 
 	@MethodSource("depositTest")
 	@ParameterizedTest
-	public void depositIncorrectAccountNegativeTests(int id, double balance, String errMessage) {
-
-		DepositRequest depositRequest = DepositRequest
-				.builder()
-				.id(id)
-				.balance(balance)
-				.build();
-
-		String errorInResponse = new DepositRequester(
+	public void depositIncorrectAccountNegativeTests(long id, double balance, String errMessage) {
+		// сумма на счету до депозита
+		DepositResponse[] accountsBeforeDeposit = new DepositRequester(
 				RequestSpecs.authAsUser(username, password),
-				ResponseSpecs.requestReturnsBad403Request())
-				.post(depositRequest)
+				ResponseSpecs.requestReturnsOK())
+				.get()
 				.extract()
-				.body()
-				.asString();
+				.as(DepositResponse[].class);
 
+		double balanceBeforeDeposit = Arrays.stream(accountsBeforeDeposit)
+				.filter(accId -> accId.getId() == accountId)
+				.findFirst()
+				.orElseThrow()
+				.getBalance();
+
+		// попытка депозита
+		DepositStep depositStep = new DepositStep(username, password, invalidAccountId, balance);
+
+		//подтверждение того, что депозит не был произведён
+		String errorInResponse = depositStep.addInvalidAccountDeposit();
 		softly.assertThat(errMessage).isEqualTo(errorInResponse);
+
+		//сверка неизменности суммы на счёте отправителя
+		DepositResponse[] accountsAfterDeposit = new DepositRequester(
+				RequestSpecs.authAsUser(username, password),
+				ResponseSpecs.requestReturnsOK())
+				.get()
+				.extract()
+				.as(DepositResponse[].class);
+
+		double balanceAfterDeposit = Arrays.stream(accountsAfterDeposit)
+				.filter(accId -> accId.getId() == accountId)
+				.findFirst()
+				.orElseThrow()
+				.getBalance();
+		softly.assertThat(balanceBeforeDeposit).isEqualTo(balanceAfterDeposit);
 	}
 }

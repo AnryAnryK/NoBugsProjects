@@ -4,6 +4,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.LoginUserRequest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.backbone.Endpoint;
 
 import static io.restassured.RestAssured.given;
 
@@ -16,7 +17,7 @@ public class LoginUserRequester extends Request<LoginUserRequest> {
 		return given()
 				.spec(requestSpecification)
 				.body(model)
-				.post("/api/v1/auth/login")
+				.post(Endpoint.LOGIN.getUrl())
 				.then()
 				.assertThat()
 				.spec(responseSpecification);

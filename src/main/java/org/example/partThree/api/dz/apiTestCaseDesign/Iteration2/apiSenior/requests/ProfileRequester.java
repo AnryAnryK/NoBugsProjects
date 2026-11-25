@@ -5,6 +5,7 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.BaseModel;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.CustomerNameRequest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.backbone.Endpoint;
 
 
 import static io.restassured.RestAssured.given;
@@ -18,7 +19,7 @@ public class ProfileRequester extends Request<BaseModel> {
 		return given()
 				.spec(requestSpecification)
 				.body(model)
-				.put("/api/v1/customer/profile")
+				.put(Endpoint.CUSTOMER.getUrl())
 				.then()
 				.assertThat()
 				.spec(responseSpecification);
@@ -27,7 +28,7 @@ public class ProfileRequester extends Request<BaseModel> {
 	public ValidatableResponse get() {
 		return given()
 				.spec(requestSpecification)
-				.get("/api/v1/customer/profile")
+				.get(Endpoint.CUSTOMER.getUrl())
 				.then()
 				.assertThat()
 				.spec(responseSpecification);

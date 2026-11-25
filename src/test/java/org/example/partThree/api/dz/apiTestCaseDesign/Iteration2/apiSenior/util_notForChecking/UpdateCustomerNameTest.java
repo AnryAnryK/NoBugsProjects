@@ -16,7 +16,7 @@ public class UpdateCustomerNameTest {
 	void updateCustomerNameTest() {
 
 		String username = RandomData.getUsername();
-		String newUsername = RandomData.getNewUsername();
+		String newUsername = RandomData.getNewUsername10Plus10Characters();
 		String password = RandomData.getPassword();
 
 		Map<String, String> personalData = Map.of("username", username, "password",password, "role", Roles.USER.toString());

@@ -4,6 +4,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.BaseModel;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.backbone.Endpoint;
 
 import static io.restassured.RestAssured.given;
 
@@ -15,7 +16,7 @@ public class CreateAccountRequester extends Request {
 	public ValidatableResponse post(BaseModel model) {
 		return given()
 				.spec(requestSpecification)
-				.post("/api/v1/accounts")
+				.post(Endpoint.ACCOUNTS.getUrl())
 				.then()
 				.assertThat()
 				.spec(responseSpecification);
@@ -23,7 +24,7 @@ public class CreateAccountRequester extends Request {
 	public ValidatableResponse post() {
 		return given()
 				.spec(requestSpecification)
-				.post("/api/v1/accounts")
+				.post(Endpoint.ACCOUNTS.getUrl())
 				.then()
 				.assertThat()
 				.spec(responseSpecification);

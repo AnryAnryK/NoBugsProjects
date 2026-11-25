@@ -4,6 +4,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.DepositRequest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.backbone.Endpoint;
 
 import static io.restassured.RestAssured.given;
 
@@ -17,7 +18,15 @@ public class DepositRequester extends Request<DepositRequest> {
 		return given()
 				.spec(requestSpecification)
 				.body(model)
-				.post("/api/v1/accounts/deposit")
+				.post(Endpoint.DEPOSIT.getUrl())
+				.then()
+				.assertThat()
+				.spec(responseSpecification);
+	}
+	public ValidatableResponse get() {
+		return given()
+				.spec(requestSpecification)
+				.get(Endpoint.CUSTOMER_ACCOUNTS.getUrl())
 				.then()
 				.assertThat()
 				.spec(responseSpecification);

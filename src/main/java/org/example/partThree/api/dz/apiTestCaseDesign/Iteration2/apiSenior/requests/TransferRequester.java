@@ -5,6 +5,7 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.BaseModel;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.TransferRequest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.backbone.Endpoint;
 
 import static io.restassured.RestAssured.given;
 
@@ -18,7 +19,7 @@ public class TransferRequester extends Request<BaseModel> {
 		return given()
 				.spec(requestSpecification)
 				.body(model)
-				.post("/api/v1/accounts/transfer")
+				.post(Endpoint.TRANSFER.getUrl())
 				.then()
 				.assertThat()
 				.spec(responseSpecification);
@@ -27,7 +28,7 @@ public class TransferRequester extends Request<BaseModel> {
 	public ValidatableResponse get(int account) {
 		return given()
 				.spec(requestSpecification)
-				.get("/api/v1/accounts/" + account + "/transactions")
+				.get(Endpoint.ACCOUNTS.getUrl() + account + "/transactions")
 				.then()
 				.assertThat()
 				.spec(responseSpecification);

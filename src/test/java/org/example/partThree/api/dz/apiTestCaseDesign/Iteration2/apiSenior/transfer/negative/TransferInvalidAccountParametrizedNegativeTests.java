@@ -1,30 +1,23 @@
 package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.transfer.negative;
 
-import org.apache.http.HttpStatus;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.BaseTest;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.CreateUserRequest;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.DepositRequest;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.Roles;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.TransferRequest;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.messages.AlertMessages;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.models.DepositResponse;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.randomizer.RandomData;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.AdminCreateUserRequester;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.CreateAccountRequester;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.DepositRequester;
-import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.TransferRequester;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.steps.CreateAccountByUserStep;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.steps.CreateUserByAdminStep;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.steps.DepositStep;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.requests.steps.TransferStep;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.specs.RequestSpecs;
 import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.specs.ResponseSpecs;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Map;
+import java.util.Arrays;
 import java.util.stream.Stream;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class TransferInvalidAccountParametrizedNegativeTests extends BaseTest {
 	String username1 = RandomData.getUsername();
@@ -33,65 +26,44 @@ public class TransferInvalidAccountParametrizedNegativeTests extends BaseTest {
 	String username2 = RandomData.getUsername();
 	String password2 = RandomData.getPassword();
 
-	int receiverAccountId_INVALID_ACCOUNT;
-	int senderAccountId;
-	double balance = 5000.00;
+	long receiverAccountId_INVALID_ACCOUNT = RandomData.getInvalidAccountId();
+	long senderAccountId;
+	static final double setAmount10000 = 10000.00;
+	static final double setBalance5000 = 5000.00;
+	static final double setAmount = RandomData.getAmount();
+
+	static final String invalidTransferInsufficientFundsOrInvalidAccounts = AlertMessages.Transfer.INVALID_TRANSFER_INSUFFICIENT_FUNDS_OR_INVALID_ACCOUNTS.getMessage();
 
 	@BeforeEach
 	void setUp() {
-		// создание первого пользователя
-		CreateUserRequest createUserRequest1 = CreateUserRequest
-				.builder()
-				.username(username1)
-				.password(password1)
-				.role(Roles.USER.toString())
-				.build();
+		// создание пользователя 1
+		CreateUserByAdminStep createUserByAdminStep1 = new CreateUserByAdminStep();
+		createUserByAdminStep1.createUserByAdmin();
+		this.username1 = createUserByAdminStep1.username;
+		this.password1 = createUserByAdminStep1.password;
 
-		new AdminCreateUserRequester(
-				RequestSpecs.adminSpec(),
-				ResponseSpecs.entityWasCreated())
-				.post(createUserRequest1);
-
-		// создание второго пользователя
-		CreateUserRequest createUserRequest2 = CreateUserRequest
-				.builder()
-				.username(username2)
-				.password(password2)
-				.role(Roles.USER.toString())
-				.build();
-
-		new AdminCreateUserRequester(
-				RequestSpecs.adminSpec(),
-				ResponseSpecs.entityWasCreated())
-				.post(createUserRequest2);
+		// создание пользователя 2
+		CreateUserByAdminStep createUserByAdminStep2 = new CreateUserByAdminStep();
+		createUserByAdminStep2.createUserByAdmin();
+		this.username2 = createUserByAdminStep2.username;
+		this.password2 = createUserByAdminStep2.password;
 
 
-		// создание счёта первого пользователя (плательщика)
-		senderAccountId = new CreateAccountRequester(
-				RequestSpecs.authAsUser(username1, password1),
-				ResponseSpecs.entityWasCreated())
-				.post(null)
-				.extract()
-				.path("id");
+		// создание счёта пользователя 1 (плательщика)
+		CreateAccountByUserStep createAccountByUserStep1 = new CreateAccountByUserStep(username1, password1);
+		createAccountByUserStep1.createAccountByUser();
+		this.senderAccountId = createAccountByUserStep1.accountId;
 
 
-		// депозит средств на счёт первого пользователя (плательщика) - захардкодил balance=5000, чтобы в рамках данных тестов денег на счёте точно хватило для перевода, иначе тест будет падать из-за нехватки средств
-		DepositRequest depositRequest = DepositRequest
-				.builder()
-				.id(senderAccountId)
-				.balance(balance)
-				.build();
-
-		new DepositRequester(
-				RequestSpecs.authAsUser(username1, password1),
-				ResponseSpecs.requestReturnsOK())
-				.post(depositRequest);
+		// депозит средств на счёт пользователя 1 (плательщика) - захардкодил balance=5000, чтобы в рамках данных тестов денег на счёте точно хватило для перевода, иначе тест будет падать из-за нехватки средств
+		DepositStep depositStep = new DepositStep(username1, password1, senderAccountId, setBalance5000);
+		depositStep.addDeposit();
 	}
 
 	public static Stream<Arguments> transferTest() {
 		return Stream.of(
-				Arguments.of(1.25, "Invalid transfer: insufficient funds or invalid accounts"),
-				Arguments.of(10000.00, "Invalid transfer: insufficient funds or invalid accounts")
+				Arguments.of(setAmount, invalidTransferInsufficientFundsOrInvalidAccounts),
+				Arguments.of(setAmount10000, invalidTransferInsufficientFundsOrInvalidAccounts)
 		);
 	}
 
@@ -99,19 +71,38 @@ public class TransferInvalidAccountParametrizedNegativeTests extends BaseTest {
 	@MethodSource("transferTest")
 	@ParameterizedTest
 	public void transferNegativeTests(double amount, String errorMessage) {
-		TransferRequest transferRequest = TransferRequest.builder()
-				.senderAccountId(senderAccountId)
-				.receiverAccountId(receiverAccountId_INVALID_ACCOUNT)
-				.amount(amount)
-				.build();
-
-		String messageAfterRequest = new TransferRequester(
+		//сумма на счёте после депозита
+		DepositResponse[] accountsBeforeTransfer = new DepositRequester(
 				RequestSpecs.authAsUser(username1, password1),
-				ResponseSpecs.requestReturnsBadRequest())
-				.post(transferRequest)
+				ResponseSpecs.requestReturnsOK())
+				.get()
 				.extract()
-				.asString();
+				.as(DepositResponse[].class);
 
+		DepositResponse balanceBeforeTransfer = Arrays.stream(accountsBeforeTransfer)
+				.filter(balance -> balance.getId() == senderAccountId)
+				.findFirst()
+				.orElseThrow();
+
+		//трансфер
+		TransferStep transferStep = new TransferStep(username1, password1, senderAccountId, receiverAccountId_INVALID_ACCOUNT, amount);
+		String messageAfterRequest = transferStep.makeInvalidTransfer();
 		softly.assertThat(messageAfterRequest).isEqualTo(errorMessage);
+
+		//сумма на счёте после трансфера
+		DepositResponse[] accountsAfterTransfer = new DepositRequester(
+				RequestSpecs.authAsUser(username1, password1),
+				ResponseSpecs.requestReturnsOK())
+				.get()
+				.extract()
+				.as(DepositResponse[].class);
+
+		DepositResponse balanceAfterTransfer = Arrays.stream(accountsAfterTransfer)
+				.filter(balance -> balance.getId() == senderAccountId)
+				.findFirst()
+				.orElseThrow();
+
+		//сверка неизменности сумм до и после
+		softly.assertThat(balanceAfterTransfer).isEqualTo(balanceBeforeTransfer);
 	}
 }

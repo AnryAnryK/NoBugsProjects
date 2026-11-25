@@ -2,7 +2,7 @@ package org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.mode
 
 import java.util.Objects;
 
-public class LoginUserResponse {
+public class LoginUserResponse extends BaseModel {
 	private String username;
 	private String role;
 

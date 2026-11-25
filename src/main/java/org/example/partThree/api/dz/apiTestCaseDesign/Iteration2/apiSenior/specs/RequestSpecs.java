@@ -5,6 +5,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import org.example.partThree.api.dz.apiTestCaseDesign.Iteration2.apiSenior.configs.Config;
 
 import java.util.List;
 
@@ -12,7 +13,6 @@ import static io.restassured.RestAssured.preemptive;
 
 public class RequestSpecs {
 
-	private static final String BASE_URI = "http://localhost:4111";
 	private static final String adminName = "admin";
 	private static final String adminPassword = "admin";
 
@@ -25,7 +25,7 @@ public class RequestSpecs {
 				.setAccept(ContentType.JSON)
 				.addFilters(List.of(new RequestLoggingFilter(),
 						new ResponseLoggingFilter()))
-				.setBaseUri(BASE_URI);
+				.setBaseUri(Config.getProperty("server") + Config.getProperty("apiVersion"));
 	}
 
 	public static RequestSpecification unauthSpec() {
